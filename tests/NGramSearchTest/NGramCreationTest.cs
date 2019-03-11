@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace NGramSearchTest
 {
-    public class UnitTest1
+    public class NGramCreationTest
     {
         [Fact]
         public void RobertHas6TriGramsTest()
@@ -25,7 +25,7 @@ namespace NGramSearchTest
         }
 
         [Fact]
-        public void MeHas3biGramTest()
+        public void MeHas3BiGramTest()
         {
             var index = new NGramSearch.NGramIndex<long>(2);
             index.Add(1, "me");
@@ -35,7 +35,7 @@ namespace NGramSearchTest
 
             Assert.Single(result);
             Assert.Equal(1, result.Single().Id);
-            Assert.Equal(3, result.Single().Similarity);
+            Assert.Equal(3, result.Single().Similarity); // _m me e_
         }
 
         [Fact]
