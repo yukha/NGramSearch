@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28606.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NGramSearch", "src\NGramSearch\NGramSearch.csproj", "{068D71C2-7B60-451D-A69A-2F8929F9B49C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DC19B876-6C7F-4371-8072-132E67769047}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{55D9313C-0C93-44C3-9714-BE9203B42DAC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{DE98B52E-30C3-4332-A67F-953DF59D2B41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGramSearchTest", "tests\NGramSearchTest\NGramSearchTest.csproj", "{A55329F5-D512-495B-A4F7-DE8AA25ABB0E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{068D71C2-7B60-451D-A69A-2F8929F9B49C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{068D71C2-7B60-451D-A69A-2F8929F9B49C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{068D71C2-7B60-451D-A69A-2F8929F9B49C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{068D71C2-7B60-451D-A69A-2F8929F9B49C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A55329F5-D512-495B-A4F7-DE8AA25ABB0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A55329F5-D512-495B-A4F7-DE8AA25ABB0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A55329F5-D512-495B-A4F7-DE8AA25ABB0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A55329F5-D512-495B-A4F7-DE8AA25ABB0E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{068D71C2-7B60-451D-A69A-2F8929F9B49C} = {DC19B876-6C7F-4371-8072-132E67769047}
+		{A55329F5-D512-495B-A4F7-DE8AA25ABB0E} = {55D9313C-0C93-44C3-9714-BE9203B42DAC}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EDA8B063-61C5-4DAD-A1E4-FC5671D288E7}
+	EndGlobalSection
+EndGlobal
