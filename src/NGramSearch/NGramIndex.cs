@@ -22,7 +22,7 @@ namespace NGramSearch
         private readonly List<TKeyType> _ignoredItems = new List<TKeyType>();
 
         public NGramIndex() : this(3)
-        {                
+        {
         }
 
         public NGramIndex(int nCount)
@@ -57,27 +57,32 @@ namespace NGramSearch
             _ignoredItems.Add(id);
         }
 
-        public IEnumerable<ResultItem<TKeyType>> SearchNgramEasyCount(string normalizedValue)
+        public IEnumerable<ResultItem<TKeyType>> SearchNgramEasyCount(string searchedValue)
         {
             var result = new List<ResultItem<TKeyType>>();
 
-            var tg = CreateNgrams(normalizedValue, NCount);
+            var tg = CreateNgrams(searchedValue, NCount);
 
             var d = new Dictionary<int, int>();
             foreach (var t in tg)
             {
+                HashSet<int> usedItem = new HashSet<int>();
                 if (_ngrams.ContainsKey(t))
                 {
-                    foreach (var subjPos in _ngrams[t])
+                    foreach (var indexedWordPosition in _ngrams[t])
                     {
-                        if (!d.ContainsKey(subjPos))
+                        if (usedItem.Contains(indexedWordPosition)) continue;
+
+                        if (!d.ContainsKey(indexedWordPosition))
                         {
-                            d[subjPos] = 1;
+                            d[indexedWordPosition] = 1;
                         }
                         else
                         {
-                            d[subjPos]++;
+                            d[indexedWordPosition]++;
                         }
+
+                        usedItem.Add(indexedWordPosition);
                     }
                 }
             }
@@ -95,27 +100,32 @@ namespace NGramSearch
             return result.OrderByDescending(s => s.Similarity);
         }
 
-        public IEnumerable<ResultItem<TKeyType>> SearchNramTargetFrequencyCoeff(string val)
+        public IEnumerable<ResultItem<TKeyType>> SearchNramTargetFrequencyCoeff(string searchedValue)
         {
             var result = new List<ResultItem<TKeyType>>();
 
-            var tg = CreateNgrams(val, NCount);
+            var tg = CreateNgrams(searchedValue, NCount);
 
             var d = new Dictionary<int, double>();
             foreach (var t in tg)
             {
+                HashSet<int> usedItem = new HashSet<int>();
                 if (_ngrams.ContainsKey(t))
                 {
-                    foreach (var subjPos in _ngrams[t])
+                    foreach (var indexedWordPosition in _ngrams[t])
                     {
-                        if (!d.ContainsKey(subjPos))
+                        if (usedItem.Contains(indexedWordPosition)) continue;
+
+                        if (!d.ContainsKey(indexedWordPosition))
                         {
-                            d[subjPos] = (double)1 / (_ngrams[t].Count);
+                            d[indexedWordPosition] = (double)1 / (_ngrams[t].Count);
                         }
                         else
                         {
-                            d[subjPos] += (double)1 / (_ngrams[t].Count);
+                            d[indexedWordPosition] += (double)1 / (_ngrams[t].Count);
                         }
+
+                        usedItem.Add(indexedWordPosition);
                     }
                 }
             }
@@ -133,17 +143,17 @@ namespace NGramSearch
             return result.OrderByDescending(s => s.Similarity);
         }
 
-        public IEnumerable<ResultItem<TKeyType>> SearchNgramLengthComparison(string val)
+        public IEnumerable<ResultItem<TKeyType>> SearchNgramLengthComparison(string searchedValue)
         {
             var result = new List<ResultItem<TKeyType>>();
 
-            var tg = CreateNgrams(val, NCount);
+            var tg = CreateNgrams(searchedValue, NCount);
 
             // deep clone dictionary
             var ngrams = _ngrams.ToDictionary(ngramItem => ngramItem.Key, ngramItem => ngramItem.Value.ToList());
 
 
-            var foundTrigramsForSubject = new Dictionary<int, int>(); // <subject, number of found>
+            var foundTrigramsForSubject = new Dictionary<int, int>();
             foreach (var t in tg)
             {
                 if (ngrams.ContainsKey(t))
@@ -208,7 +218,7 @@ namespace NGramSearch
             if (!String.IsNullOrWhiteSpace(str))
             {
                 var len = str.Length;
-                for (int i = -1 * (n - (NCount - 1)); i < len-(NCount - 2); ++i)
+                for (int i = -1 * (n - (NCount - 1)); i < len - (NCount - 2); ++i)
                 {
                     var sb = new StringBuilder();
                     var p = i;
