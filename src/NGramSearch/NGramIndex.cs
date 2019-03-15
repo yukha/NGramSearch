@@ -14,10 +14,8 @@ namespace NGramSearch
         /// </summary>
         private readonly List<IndexedItem<TKeyType>> _indexedItems = new List<IndexedItem<TKeyType>>();
 
-        /// <summary>
-        /// Dictionary (ngram, list of positions in _IndexedItems)
-        /// </summary>
-        private readonly IDictionary<string, List<int>> _ngrams = new Dictionary<string, List<int>>();
+        private readonly IDictionary<string, List<IndexedSyllableProperty>> _ngrams
+            = new Dictionary<string, List<IndexedSyllableProperty>>();
 
         private readonly List<TKeyType> _ignoredItems = new List<TKeyType>();
 
@@ -40,15 +38,16 @@ namespace NGramSearch
             _indexedItems.Add(cachedItem);
 
 
-            foreach (var nGram in cachedItem.Ngrams)
+            foreach (GroupedSyllable groupedSyllable in cachedItem.Ngrams)
             {
-                if (!_ngrams.ContainsKey(nGram))
+                if (!_ngrams.ContainsKey(groupedSyllable.Syllable))
                 {
-                    _ngrams[nGram] = new List<int>();
+                    _ngrams[groupedSyllable.Syllable] = new List<IndexedSyllableProperty>();
                 }
 
                 // add position to the list of positions
-                _ngrams[nGram].Add(_indexedItems.Count - 1);
+                _ngrams[groupedSyllable.Syllable].Add(
+                    new IndexedSyllableProperty(_indexedItems.Count - 1, groupedSyllable.SyllableCount));
             }
         }
 
@@ -61,39 +60,42 @@ namespace NGramSearch
         {
             var result = new List<ResultItem<TKeyType>>();
 
-            var tg = CreateNgrams(searchedValue, NCount);
+            var searchedSyllables = CreateNgrams(searchedValue, NCount);
 
-            var d = new Dictionary<int, int>();
-            foreach (var t in tg)
+            var wordIndexSimilarity = new Dictionary<int, int>();
+
+            foreach (GroupedSyllable searchedGroupedSyllable in searchedSyllables)
             {
-                HashSet<int> usedItem = new HashSet<int>();
-                if (_ngrams.ContainsKey(t))
+                // HashSet<int> usedItem = new HashSet<int>();
+                if (_ngrams.ContainsKey(searchedGroupedSyllable.Syllable))
                 {
-                    foreach (var indexedWordPosition in _ngrams[t])
+                    foreach (var wordIndexAndCount in _ngrams[searchedGroupedSyllable.Syllable])
                     {
-                        if (usedItem.Contains(indexedWordPosition)) continue;
+                        // if (usedItem.Contains(indexedWordPosition)) continue;
 
-                        if (!d.ContainsKey(indexedWordPosition))
+                        if (!wordIndexSimilarity.ContainsKey(wordIndexAndCount.WordIndex))
                         {
-                            d[indexedWordPosition] = 1;
+                            wordIndexSimilarity[wordIndexAndCount.WordIndex] 
+                                = Math.Min(searchedGroupedSyllable.SyllableCount, wordIndexAndCount.SyllableCount);
                         }
                         else
                         {
-                            d[indexedWordPosition]++;
+                            wordIndexSimilarity[wordIndexAndCount.WordIndex]
+                                += Math.Min(searchedGroupedSyllable.SyllableCount, wordIndexAndCount.SyllableCount);
                         }
 
-                        usedItem.Add(indexedWordPosition);
+                        // usedItem.Add(indexedWordPosition);
                     }
                 }
             }
 
             result.AddRange(
-                d.Keys.Select(
+                wordIndexSimilarity.Keys.Select(
                     dkey =>
                         new ResultItem<TKeyType>
                         {
                             Id = _indexedItems[dkey].Id,
-                            Similarity = d[dkey],
+                            Similarity = wordIndexSimilarity[dkey],
                         }));
 
 
@@ -104,39 +106,44 @@ namespace NGramSearch
         {
             var result = new List<ResultItem<TKeyType>>();
 
-            var tg = CreateNgrams(searchedValue, NCount);
+            var searchedSyllables = CreateNgrams(searchedValue, NCount);
 
-            var d = new Dictionary<int, double>();
-            foreach (var t in tg)
+            var wordIndexSimilarity = new Dictionary<int, double>();
+
+            foreach (GroupedSyllable searchedGroupedSyllable in searchedSyllables)
             {
-                HashSet<int> usedItem = new HashSet<int>();
-                if (_ngrams.ContainsKey(t))
+                // HashSet<int> usedItem = new HashSet<int>();
+                if (_ngrams.ContainsKey(searchedGroupedSyllable.Syllable))
                 {
-                    foreach (var indexedWordPosition in _ngrams[t])
+                    foreach (var wordIndexAndCount in _ngrams[searchedGroupedSyllable.Syllable])
                     {
-                        if (usedItem.Contains(indexedWordPosition)) continue;
+                        // if (usedItem.Contains(indexedWordPosition)) continue;
 
-                        if (!d.ContainsKey(indexedWordPosition))
+                        if (!wordIndexSimilarity.ContainsKey(wordIndexAndCount.WordIndex))
                         {
-                            d[indexedWordPosition] = (double)1 / (_ngrams[t].Count);
+                            wordIndexSimilarity[wordIndexAndCount.WordIndex] 
+                                = (double)Math.Min(searchedGroupedSyllable.SyllableCount, wordIndexAndCount.SyllableCount) 
+                                  / (_ngrams[searchedGroupedSyllable.Syllable].Sum(x => x.SyllableCount));
                         }
                         else
                         {
-                            d[indexedWordPosition] += (double)1 / (_ngrams[t].Count);
+                            wordIndexSimilarity[wordIndexAndCount.WordIndex] 
+                                += (double)Math.Min(searchedGroupedSyllable.SyllableCount, wordIndexAndCount.SyllableCount) 
+                                   / (_ngrams[searchedGroupedSyllable.Syllable].Sum(x => x.SyllableCount));
                         }
 
-                        usedItem.Add(indexedWordPosition);
+                        //usedItem.Add(indexedWordPosition);
                     }
                 }
             }
 
             result.AddRange(
-                d.Keys.Select(
+                wordIndexSimilarity.Keys.Select(
                     dkey =>
                         new ResultItem<TKeyType>
                         {
                             Id = _indexedItems[dkey].Id,
-                            Similarity = d[dkey],
+                            Similarity = wordIndexSimilarity[dkey],
                         }));
 
 
@@ -156,13 +163,13 @@ namespace NGramSearch
             var foundTrigramsForSubject = new Dictionary<int, int>();
             foreach (var t in tg)
             {
-                if (ngrams.ContainsKey(t))
+                if (ngrams.ContainsKey(t.Syllable))
                 {
-                    int len = ngrams[t].Count;
+                    int len = ngrams[t.Syllable].Count;
                     int lastSubjectPos = -1;
                     for (int i = 0; i < len; ++i)
                     {
-                        int subjPos = ngrams[t][i];
+                        int subjPos = ngrams[t.Syllable][i].WordIndex;
                         if (subjPos == lastSubjectPos) continue;
 
                         if (!foundTrigramsForSubject.ContainsKey(subjPos))
@@ -174,7 +181,7 @@ namespace NGramSearch
                             foundTrigramsForSubject[subjPos] += 1;
                         }
                         lastSubjectPos = subjPos;
-                        ngrams[t].RemoveAt(i);
+                        ngrams[t.Syllable].RemoveAt(i);
                         --len;
                         --i;
                     }
@@ -212,10 +219,10 @@ namespace NGramSearch
             return (foundPieces / sourceLength) * (foundPieces / targetLength);
         }
 
-        private IList<string> CreateNgrams(string str, int n)
+        private IList<GroupedSyllable> CreateNgrams(string str, int n)
         {
             var list = new List<string>();
-            if (!String.IsNullOrWhiteSpace(str))
+            if (!string.IsNullOrWhiteSpace(str))
             {
                 var len = str.Length;
                 for (int i = -1 * (n - (NCount - 1)); i < len - (NCount - 2); ++i)
@@ -241,7 +248,12 @@ namespace NGramSearch
                 }
 
             }
-            return list;
+
+            return list.GroupBy(ngram => ngram).Select(g => new GroupedSyllable
+            {
+                Syllable = g.Key,
+                SyllableCount = g.Count()
+            }).ToList();
         }
 
     }

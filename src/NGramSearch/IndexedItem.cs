@@ -9,6 +9,6 @@ namespace NGramSearch
         public TKeyType Id { get; set; }
         public string NormalizedValue { get; set; }
 
-        public IList<string> Ngrams { get; set; }
+        public IList<GroupedSyllable> Ngrams { get; set; }
     }
 }
