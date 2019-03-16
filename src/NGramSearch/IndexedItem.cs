@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace NGramSearch
 {
@@ -9,6 +7,6 @@ namespace NGramSearch
         public TKeyType Id { get; set; }
         public string NormalizedValue { get; set; }
 
-        public IList<GroupedSyllable> Ngrams { get; set; }
+        public IList<GroupedNgram> Ngrams { get; set; }
     }
 }

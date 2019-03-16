@@ -29,7 +29,7 @@ namespace NGramSearchTest
             source.Add("first", "aaaaaaa");
             source.Add("second", "aaabbbb");
 
-            var result = source.SearchNramTargetFrequencyCoeff("aaa");
+            var result = source.SearchNramCountWithFrequency("aaa");
 
 
             Assert.Equal("first", result.First().Id);
@@ -87,7 +87,7 @@ namespace NGramSearchTest
             source.Add("first", "aaa");
             source.Add("second", "aaabbbb");
 
-            var result = source.SearchNramTargetFrequencyCoeff("aaaaaaa");
+            var result = source.SearchNramCountWithFrequency("aaaaaaa");
 
 
             Assert.Equal("first", result.First().Id);
@@ -102,7 +102,7 @@ namespace NGramSearchTest
             source.Add("first", "aaaaaaa");
             source.Add("second", "aaabbbb");
 
-            var result = source.SearchNramTargetFrequencyCoeff("aaaa");
+            var result = source.SearchNramCountWithFrequency("aaaa");
 
 
             Assert.Equal("first", result.First().Id);

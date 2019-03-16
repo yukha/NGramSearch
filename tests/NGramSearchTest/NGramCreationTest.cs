@@ -67,13 +67,13 @@ namespace NGramSearchTest
             germaniFirms.Add(6, "lange uhren gmbh");
 
 
-            var result = germaniFirms.SearchNramTargetFrequencyCoeff(" se");
+            var result = germaniFirms.SearchNramCountWithFrequency(" se");
 
             Assert.Single(result);
             Assert.Equal(3, result.First().Id);
             Assert.Equal(2, result.First().Similarity); // _se se_
 
-            result = germaniFirms.SearchNramTargetFrequencyCoeff(" ag");
+            result = germaniFirms.SearchNramCountWithFrequency(" ag");
 
             Assert.Equal(4, result.Count());
             Assert.All(result.Select(r => r.Id), item => (new[] { 1, 2, 4, 5 }).Contains(item)); // "ag" contains 1,2,4,5
@@ -103,6 +103,22 @@ namespace NGramSearchTest
             Assert.Single(result);
             Assert.Equal(4, result.First().Id);
             Assert.Equal(3.0 / 6, result.First().Similarity, 8); // _bm bmw mw_ / _bm bmw mw_ w_a _ag ag_ = 3/6
+        }
+
+        [Fact]
+        public void ChechNgramCount()
+        {
+            var germaniFirms = new NGramSearch.NGramIndex<int>();
+            germaniFirms.Add(1, "volkswagen ag");
+            germaniFirms.Add(2, "daimler ag");
+            germaniFirms.Add(3, "allianz se");
+            germaniFirms.Add(4, "bmw ag");
+            germaniFirms.Add(5, "siemens ag");
+            germaniFirms.Add(6, "lange uhren gmbh");
+
+            var result = germaniFirms.GetAllNgrams().OrderByDescending(x => x.NgramCount).OrderBy(x => x.Ngram).ToList();
+            Assert.Equal(4, result.First().NgramCount);
+            Assert.Equal(" ag", result.First().Ngram);
         }
     }
 }
