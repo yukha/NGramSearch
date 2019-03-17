@@ -29,10 +29,10 @@ namespace NGramSearch
         }
 
 
-        public void Add(TKeyType id, string normalizedValue)
+        public void Add(TKeyType primaryKey, string normalizedValue)
         {
 
-            var cachedItem = new IndexedItem<TKeyType> { Id = id, NormalizedValue = normalizedValue };
+            var cachedItem = new IndexedItem<TKeyType> { Id = primaryKey, NormalizedValue = normalizedValue };
             cachedItem.Ngrams = CreateNgrams(cachedItem.NormalizedValue, NCount);
 
             _indexedItems.Add(cachedItem);

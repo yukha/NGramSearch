@@ -106,7 +106,7 @@ namespace NGramSearchTest
         }
 
         [Fact]
-        public void ChechNgramCount()
+        public void CheckNgramCount()
         {
             var germaniFirms = new NGramSearch.NGramIndex<int>();
             germaniFirms.Add(1, "volkswagen ag");
@@ -116,9 +116,73 @@ namespace NGramSearchTest
             germaniFirms.Add(5, "siemens ag");
             germaniFirms.Add(6, "lange uhren gmbh");
 
-            var result = germaniFirms.GetAllNgrams().OrderByDescending(x => x.NgramCount).OrderBy(x => x.Ngram).ToList();
+            var result = germaniFirms.GetAllNgrams()
+                .OrderByDescending(x => x.NgramCount)
+                .ThenBy(x => x.Ngram)
+                .ToList();
+
             Assert.Equal(4, result.First().NgramCount);
-            Assert.Equal(" ag", result.First().Ngram);
+
+            Assert.Equal(" ag", result[0].Ngram);
+            Assert.Equal(4, result[1].NgramCount);
+
+            Assert.Equal("ag ", result[1].Ngram);
+            Assert.Equal(4, result[1].NgramCount);
+        }
+
+        [Fact]
+        public void CheckTotalBigramCount()
+        {
+            var index = new NGramSearch.NGramIndex<int>(2);
+
+            index.Add(1, "abcd");
+            Assert.Equal(5, index.GetAllNgrams().Count());
+
+            index.Add(2, "defg");
+            Assert.Equal(10, index.GetAllNgrams().Count());
+
+            index.Add(3, "abc"); // new is "c_"
+            Assert.Equal(11, index.GetAllNgrams().Count());
+        }
+
+        [Fact]
+        public void CheckTotalTrigramCount()
+        {
+            var index = new NGramSearch.NGramIndex<int>(3);
+
+            index.Add(1, "abcd");
+            Assert.Equal(4, index.GetAllNgrams().Count());
+
+            index.Add(2, "defg");
+            Assert.Equal(8, index.GetAllNgrams().Count());
+
+            index.Add(3, "abc"); // new is "bc_"
+            Assert.Equal(9, index.GetAllNgrams().Count());
+        }
+
+        [Fact]
+        public void CheckTotalFourgramCount()
+        {
+            var index = new NGramSearch.NGramIndex<int>(4);
+
+            index.Add(1, "abcd");
+            Assert.Equal(3, index.GetAllNgrams().Count());
+
+            index.Add(2, "defg");
+            Assert.Equal(6, index.GetAllNgrams().Count());
+
+            index.Add(3, "abc"); // new is "abc_"
+            Assert.Equal(7, index.GetAllNgrams().Count());
+        }
+
+        [Fact]
+        public void CheckTooShortWord()
+        {
+            var index = new NGramSearch.NGramIndex<int>(4);
+
+            index.Add(1, "a");
+
+            Assert.Empty(index.GetAllNgrams());
         }
     }
 }
