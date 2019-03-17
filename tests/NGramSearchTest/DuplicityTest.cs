@@ -15,7 +15,7 @@ namespace NGramSearchTest
             source.Add("first", "aaaa");
             source.Add("second", "bbbb");
 
-            var result = source.SearchNgramEasyCount("aaa");
+            var result = source.SearchWithCount("aaa");
 
             Assert.Single(result);
             Assert.Equal("first", result.First().Id);
@@ -29,7 +29,7 @@ namespace NGramSearchTest
             source.Add("first", "aaaaaaa");
             source.Add("second", "aaabbbb");
 
-            var result = source.SearchNramCountWithFrequency("aaa");
+            var result = source.SearchWithCount("aaa", true);
 
 
             Assert.Equal("first", result.First().Id);
@@ -45,7 +45,7 @@ namespace NGramSearchTest
             source.Add("second", "bbbb");
 
 
-            var result = source.SearchNgramLengthComparison("aaa");
+            var result = source.SearchWithSorensenDiceCoefficient("aaa");
 
             Assert.Single(result);
             Assert.Equal("first", result.First().Id);
@@ -59,7 +59,7 @@ namespace NGramSearchTest
             source.Add("first", "aaa");
             source.Add("second", "bbb");
 
-            var result = source.SearchNgramEasyCount("aaaa");
+            var result = source.SearchWithCount("aaaa");
 
             Assert.Single(result);
             Assert.Equal("first", result.First().Id);
@@ -73,7 +73,7 @@ namespace NGramSearchTest
             source.Add("first", "aaaaaaaaaa");
             source.Add("second", "bbb");
 
-            var result = source.SearchNgramEasyCount("aaaaa");
+            var result = source.SearchWithCount("aaaaa");
 
             Assert.Single(result);
             Assert.Equal("first", result.First().Id);
@@ -87,7 +87,7 @@ namespace NGramSearchTest
             source.Add("first", "aaa");
             source.Add("second", "aaabbbb");
 
-            var result = source.SearchNramCountWithFrequency("aaaaaaa");
+            var result = source.SearchWithCount("aaaaaaa", true);
 
 
             Assert.Equal("first", result.First().Id);
@@ -102,7 +102,7 @@ namespace NGramSearchTest
             source.Add("first", "aaaaaaa");
             source.Add("second", "aaabbbb");
 
-            var result = source.SearchNramCountWithFrequency("aaaa");
+            var result = source.SearchWithCount("aaaa", true);
 
 
             Assert.Equal("first", result.First().Id);

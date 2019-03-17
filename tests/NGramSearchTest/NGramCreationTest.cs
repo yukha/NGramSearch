@@ -17,7 +17,7 @@ namespace NGramSearchTest
             actors.Add(4, "kevin spacey");
 
 
-            var result = actors.SearchNgramEasyCount("robert");
+            var result = actors.SearchWithCount("robert");
 
             Assert.Single(result);
             Assert.Equal(3, result.First().Id);
@@ -31,7 +31,7 @@ namespace NGramSearchTest
             index.Add(1, "me");
             index.Add(2, "you");
 
-            var result = index.SearchNgramEasyCount("me");
+            var result = index.SearchWithCount("me");
 
             Assert.Single(result);
             Assert.Equal(1, result.Single().Id);
@@ -48,7 +48,7 @@ namespace NGramSearchTest
             actors.Add(4, "kevin spacey");
 
 
-            var result = actors.SearchNgramEasyCount("robert");
+            var result = actors.SearchWithCount("robert");
 
             Assert.Single(result);
             Assert.Equal(3, result.First().Id);
@@ -67,13 +67,13 @@ namespace NGramSearchTest
             germaniFirms.Add(6, "lange uhren gmbh");
 
 
-            var result = germaniFirms.SearchNramCountWithFrequency(" se");
+            var result = germaniFirms.SearchWithCount(" se", true);
 
             Assert.Single(result);
             Assert.Equal(3, result.First().Id);
             Assert.Equal(2, result.First().Similarity); // _se se_
 
-            result = germaniFirms.SearchNramCountWithFrequency(" ag");
+            result = germaniFirms.SearchWithCount(" ag", true);
 
             Assert.Equal(4, result.Count());
             Assert.All(result.Select(r => r.Id), item => (new[] { 1, 2, 4, 5 }).Contains(item)); // "ag" contains 1,2,4,5
@@ -92,17 +92,18 @@ namespace NGramSearchTest
             germaniFirms.Add(6, "lange uhren gmbh");
 
 
-            var result = germaniFirms.SearchNgramLengthComparison("bmw ag");
+            var result = germaniFirms.SearchWithSorensenDiceCoefficient("bmw ag");
 
             Assert.All(result.Select(r => r.Id), item => (new[] { 1, 2, 4, 5 }).Contains(item) ); // "ag" contains 1,2,4,5
             Assert.Equal(4, result.First().Id); // 4 must be first
             Assert.Equal(1, result.First().Similarity); // "bmw ag" has 100% similarity
 
-            result = germaniFirms.SearchNgramLengthComparison("bmw");
+            result = germaniFirms.SearchWithSorensenDiceCoefficient("bmw");
 
             Assert.Single(result);
             Assert.Equal(4, result.First().Id);
-            Assert.Equal(3.0 / 6, result.First().Similarity, 8); // _bm bmw mw_ / _bm bmw mw_ w_a _ag ag_ = 3/6
+            // _bm bmw mw_ & _bm bmw mw_ w_a _ag ag_ : 2 * 3:intersection / (3 + 6) = 2 / 3
+            Assert.Equal(2.0 / 3, result.First().Similarity, 8); 
         }
 
         [Fact]

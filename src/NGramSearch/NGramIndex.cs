@@ -60,26 +60,38 @@ namespace NGramSearch
             _ignoredItems.Add(id);
         }
 
-        public IEnumerable<ResultItem<TKeyType>> SearchNgramEasyCount(string searchedPhrase)
+        public IEnumerable<ResultItem<TKeyType>> SearchWithCount(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
         {
-            return Search(searchedPhrase, (data) => Math.Min(data.searchNgramCount, data.indexedItemNgramCoun));
+            if (reducePriorityOfNoisyNgrams)
+            {
+                return Search(
+                    searchedPhrase,
+                    (data) => (double)Math.Min(data.searchNgramCount, data.indexedItemNgramCoun)
+                                             / data.indexNgramCount,
+                    (data) => data.intersections);
+            }
+
+            return Search(searchedPhrase,
+                         (data) => Math.Min(data.searchNgramCount, data.indexedItemNgramCoun),
+                         (data) => data.intersections);
         }
 
-        public IEnumerable<ResultItem<TKeyType>> SearchNramCountWithFrequency(string searchedPhrase)
+        public IEnumerable<ResultItem<TKeyType>> SearchWithSorensenDiceCoefficient(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
         {
-            return Search(searchedPhrase, (data) =>
-            (double)Math.Min(data.searchNgramCount, data.indexedItemNgramCoun)
-                        / data.indexNgramCount);
+            return Search(searchedPhrase,
+                         (data) => Math.Min(data.searchNgramCount, data.indexedItemNgramCoun),
+                         (data) => 2 * data.intersections / (data.indexItemLength + data.searchedPhraseLength));
         }
 
         private IEnumerable<ResultItem<TKeyType>> Search(string searchedPhrase,
-            Func<(int searchNgramCount, int indexedItemNgramCoun, int indexNgramCount), double> calculateSimilarity)
+        Func<(int searchNgramCount, int indexedItemNgramCoun, int indexNgramCount), double> calculateNgramSimilarity,
+        Func<(double intersections, int indexItemLength, int searchedPhraseLength), double> calculatePhraseSimilarity)
         {
             var result = new List<ResultItem<TKeyType>>();
 
             var searchNgrams = CreateNgrams(searchedPhrase, NCount);
 
-            var wordIndexSimilarity = new Dictionary<int, double>();
+            var intersections = new Dictionary<int, double>(); // index item primary key, number of intersections
 
             foreach (GroupedNgram groupedNgram in searchNgrams)
             {
@@ -87,82 +99,38 @@ namespace NGramSearch
                 {
                     foreach (var wordIndexAndCount in _pivotIndex[groupedNgram.Ngram].IndexedItemReferences)
                     {
-                        if (!wordIndexSimilarity.ContainsKey(wordIndexAndCount.WordIndex))
+                        if (!intersections.ContainsKey(wordIndexAndCount.WordIndex))
                         {
-                            wordIndexSimilarity[wordIndexAndCount.WordIndex]
-                                = calculateSimilarity((groupedNgram.NgramCount, wordIndexAndCount.NgramCount, _pivotIndex[groupedNgram.Ngram].TotalCount));
+                            intersections[wordIndexAndCount.WordIndex]
+                                = calculateNgramSimilarity((groupedNgram.NgramCount,
+                                                            wordIndexAndCount.NgramCount,
+                                                            _pivotIndex[groupedNgram.Ngram].TotalCount));
                         }
                         else
                         {
-                            wordIndexSimilarity[wordIndexAndCount.WordIndex]
-                               += calculateSimilarity((groupedNgram.NgramCount, wordIndexAndCount.NgramCount, _pivotIndex[groupedNgram.Ngram].TotalCount));
+                            intersections[wordIndexAndCount.WordIndex]
+                               += calculateNgramSimilarity((groupedNgram.NgramCount,
+                                                            wordIndexAndCount.NgramCount,
+                                                            _pivotIndex[groupedNgram.Ngram].TotalCount));
                         }
                     }
                 }
             }
 
             result.AddRange(
-                wordIndexSimilarity.Keys.Select(
+                intersections.Keys.Select(
                     dkey =>
                         new ResultItem<TKeyType>
                         {
                             Id = _indexedItems[dkey].Id,
-                            Similarity = wordIndexSimilarity[dkey],
+                            Similarity = calculatePhraseSimilarity(
+                                (intersections[dkey],
+                                _indexedItems[dkey].Ngrams.Sum(x => x.NgramCount),
+                                searchNgrams.Sum(x => x.NgramCount)))
                         }));
 
 
             return result.OrderByDescending(s => s.Similarity);
-        }
-
-        public IEnumerable<ResultItem<TKeyType>> SearchNgramLengthComparison(string searchedValue)
-        {
-            var result = new List<ResultItem<TKeyType>>();
-
-            var tg = CreateNgrams(searchedValue, NCount);
-
-            // deep clone dictionary
-            var ngrams = _pivotIndex.ToDictionary(ngramItem => ngramItem.Key, ngramItem => ngramItem.Value.IndexedItemReferences.ToList());
-
-
-            var foundTrigramsForSubject = new Dictionary<int, int>();
-            foreach (var t in tg)
-            {
-                if (ngrams.ContainsKey(t.Ngram))
-                {
-                    int len = ngrams[t.Ngram].Count;
-                    int lastSubjectPos = -1;
-                    for (int i = 0; i < len; ++i)
-                    {
-                        int subjPos = ngrams[t.Ngram][i].WordIndex;
-                        if (subjPos == lastSubjectPos) continue;
-
-                        if (!foundTrigramsForSubject.ContainsKey(subjPos))
-                        {
-                            foundTrigramsForSubject[subjPos] = 1;
-                        }
-                        else
-                        {
-                            foundTrigramsForSubject[subjPos] += 1;
-                        }
-                        lastSubjectPos = subjPos;
-                        ngrams[t.Ngram].RemoveAt(i);
-                        --len;
-                        --i;
-                    }
-                }
-            }
-
-            result.AddRange(
-                foundTrigramsForSubject.Keys.Select(
-                    dkey =>
-                        new ResultItem<TKeyType>
-                        {
-                            Id = _indexedItems[dkey].Id,
-                            Similarity = CompareLength(tg.Count, _indexedItems[dkey].Ngrams.Count, foundTrigramsForSubject[dkey])
-                        }));
-
-
-            return result.Where(r => !_ignoredItems.Contains(r.Id)).OrderByDescending(s => s.Similarity);
         }
 
         public IEnumerable<GroupedNgram> GetAllNgrams()
@@ -183,10 +151,6 @@ namespace NGramSearch
         //    return System.Text.RegularExpressions.Regex.Replace(sb.ToString(), @"\s+", " ");
         //}
 
-        private static double CompareLength(double sourceLength, double targetLength, double foundPieces)
-        {
-            return (foundPieces / sourceLength) * (foundPieces / targetLength);
-        }
 
         private IList<GroupedNgram> CreateNgrams(string str, int n)
         {
