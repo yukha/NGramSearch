@@ -15,7 +15,7 @@ namespace NGramSearchTest
             source.Add("first", "aaaa");
             source.Add("second", "bbbb");
 
-            var result = source.SearchWithCount("aaa");
+            var result = source.SearchWithIntersectionCount("aaa");
 
             Assert.Single(result);
             Assert.Equal("first", result.First().Id);
@@ -29,7 +29,7 @@ namespace NGramSearchTest
             source.Add("first", "aaaaaaa");
             source.Add("second", "aaabbbb");
 
-            var result = source.SearchWithCount("aaa", true);
+            var result = source.SearchWithIntersectionCount("aaa", true);
 
 
             Assert.Equal("first", result.First().Id);
@@ -59,7 +59,7 @@ namespace NGramSearchTest
             source.Add("first", "aaa");
             source.Add("second", "bbb");
 
-            var result = source.SearchWithCount("aaaa");
+            var result = source.SearchWithIntersectionCount("aaaa");
 
             Assert.Single(result);
             Assert.Equal("first", result.First().Id);
@@ -73,7 +73,7 @@ namespace NGramSearchTest
             source.Add("first", "aaaaaaaaaa");
             source.Add("second", "bbb");
 
-            var result = source.SearchWithCount("aaaaa");
+            var result = source.SearchWithIntersectionCount("aaaaa");
 
             Assert.Single(result);
             Assert.Equal("first", result.First().Id);
@@ -87,7 +87,7 @@ namespace NGramSearchTest
             source.Add("first", "aaa");
             source.Add("second", "aaabbbb");
 
-            var result = source.SearchWithCount("aaaaaaa", true);
+            var result = source.SearchWithIntersectionCount("aaaaaaa", true);
 
 
             Assert.Equal("first", result.First().Id);
@@ -102,7 +102,7 @@ namespace NGramSearchTest
             source.Add("first", "aaaaaaa");
             source.Add("second", "aaabbbb");
 
-            var result = source.SearchWithCount("aaaa", true);
+            var result = source.SearchWithIntersectionCount("aaaa", true);
 
 
             Assert.Equal("first", result.First().Id);

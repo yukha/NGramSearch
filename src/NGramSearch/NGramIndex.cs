@@ -60,15 +60,20 @@ namespace NGramSearch
             _ignoredItems.Add(id);
         }
 
-        public IEnumerable<ResultItem<TKeyType>> SearchWithCount(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
+        /// <summary>
+        /// Number of intersection
+        /// </summary>
+        /// <param name="searchedPhrase">Search phrase</param>
+        /// <param name="reducePriorityOfNoisyNgrams">Calculate the weight of ngrams in the index and reduce the priority of noisy ngrams.</param>
+        /// <returns></returns>
+        public IEnumerable<ResultItem<TKeyType>> SearchWithIntersectionCount(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
         {
             if (reducePriorityOfNoisyNgrams)
             {
-                return Search(
-                    searchedPhrase,
-                    (data) => (double)Math.Min(data.searchNgramCount, data.indexedItemNgramCoun)
+                return Search(searchedPhrase,
+                             (data) => (double)Math.Min(data.searchNgramCount, data.indexedItemNgramCoun)
                                              / data.indexNgramCount,
-                    (data) => data.intersections);
+                             (data) => data.intersections);
             }
 
             return Search(searchedPhrase,
@@ -76,11 +81,46 @@ namespace NGramSearch
                          (data) => data.intersections);
         }
 
+        /// <summary>
+        /// https://en.wikipedia.org/wiki/Simple_matching_coefficient
+        /// intersection / (indexed_item_length + searchedPhrase_length)
+        /// </summary>
+        /// <param name="searchedPhrase">Search phrase</param>
+        /// <param name="reducePriorityOfNoisyNgrams">Calculate the weight of ngrams in the index and reduce the priority of noisy ngrams.</param>
+        /// <returns></returns>
+        public IEnumerable<ResultItem<TKeyType>> SearchWithSimpleMatchingCoefficient(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
+        {
+            return Search(searchedPhrase,
+                         (data) => Math.Min(data.searchNgramCount, data.indexedItemNgramCoun),
+                         (data) => data.intersections / (data.indexItemLength + data.searchedPhraseLength));
+        }
+
+        /// <summary>
+        /// https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient
+        /// 2 * (intersection) / (indexed_item_length + searchedPhrase_length)
+        /// </summary>
+        /// <param name="searchedPhrase">Search phrase</param>
+        /// <param name="reducePriorityOfNoisyNgrams">Calculate the weight of ngrams in the index and reduce the priority of noisy ngrams.</param>
+        /// <returns></returns>
         public IEnumerable<ResultItem<TKeyType>> SearchWithSorensenDiceCoefficient(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
         {
             return Search(searchedPhrase,
                          (data) => Math.Min(data.searchNgramCount, data.indexedItemNgramCoun),
                          (data) => 2 * data.intersections / (data.indexItemLength + data.searchedPhraseLength));
+        }
+
+        /// <summary>
+        /// https://en.wikipedia.org/wiki/Jaccard_index
+        /// intersection / (indexed_item_length + searchedPhrase_length - intersection)
+        /// </summary>
+        /// <param name="searchedPhrase">Search phrase</param>
+        /// <param name="reducePriorityOfNoisyNgrams">Calculate the weight of ngrams in the index and reduce the priority of noisy ngrams.</param>
+        /// <returns></returns>
+        public IEnumerable<ResultItem<TKeyType>> SearchWithJaccardIndex(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
+        {
+            return Search(searchedPhrase,
+                         (data) => Math.Min(data.searchNgramCount, data.indexedItemNgramCoun),
+                         (data) => data.intersections / (data.indexItemLength + data.searchedPhraseLength - data.intersections));
         }
 
         private IEnumerable<ResultItem<TKeyType>> Search(string searchedPhrase,

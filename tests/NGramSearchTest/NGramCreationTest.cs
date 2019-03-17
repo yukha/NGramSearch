@@ -17,7 +17,7 @@ namespace NGramSearchTest
             actors.Add(4, "kevin spacey");
 
 
-            var result = actors.SearchWithCount("robert");
+            var result = actors.SearchWithIntersectionCount("robert");
 
             Assert.Single(result);
             Assert.Equal(3, result.First().Id);
@@ -31,7 +31,7 @@ namespace NGramSearchTest
             index.Add(1, "me");
             index.Add(2, "you");
 
-            var result = index.SearchWithCount("me");
+            var result = index.SearchWithIntersectionCount("me");
 
             Assert.Single(result);
             Assert.Equal(1, result.Single().Id);
@@ -48,7 +48,7 @@ namespace NGramSearchTest
             actors.Add(4, "kevin spacey");
 
 
-            var result = actors.SearchWithCount("robert");
+            var result = actors.SearchWithIntersectionCount("robert");
 
             Assert.Single(result);
             Assert.Equal(3, result.First().Id);
@@ -67,13 +67,13 @@ namespace NGramSearchTest
             germaniFirms.Add(6, "lange uhren gmbh");
 
 
-            var result = germaniFirms.SearchWithCount(" se", true);
+            var result = germaniFirms.SearchWithIntersectionCount(" se", true);
 
             Assert.Single(result);
             Assert.Equal(3, result.First().Id);
             Assert.Equal(2, result.First().Similarity); // _se se_
 
-            result = germaniFirms.SearchWithCount(" ag", true);
+            result = germaniFirms.SearchWithIntersectionCount(" ag", true);
 
             Assert.Equal(4, result.Count());
             Assert.All(result.Select(r => r.Id), item => (new[] { 1, 2, 4, 5 }).Contains(item)); // "ag" contains 1,2,4,5
