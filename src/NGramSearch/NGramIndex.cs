@@ -7,6 +7,9 @@ namespace NGramSearch
 {
     public class NGramIndex<TKeyType>
     {
+        private delegate double CalculatePhraseSimilarity(IndexedItem<TKeyType> indexedItem, double intersections, IList<GroupedNgram> searchNgrams);
+        private delegate double CalculateNgramSimilarity(GroupedNgram searchedNgram, IndexedNgramProperty indexedNgram);
+
         private readonly int NCount;
 
         /// <summary>
@@ -71,14 +74,14 @@ namespace NGramSearch
             if (reducePriorityOfNoisyNgrams)
             {
                 return Search(searchedPhrase,
-                             (data) => (double)Math.Min(data.searchNgramCount, data.indexedItemNgramCoun)
-                                             / data.indexNgramCount,
-                             (data) => data.intersections);
+                             (searchedNgram, indexedNgram) => (double)Math.Min(searchedNgram.NgramCount, indexedNgram.NgramCount)
+                                                                / _pivotIndex[searchedNgram.Ngram].TotalCount,
+                             (indexedItem, intersections, searchNgrams) => intersections);
             }
 
             return Search(searchedPhrase,
-                         (data) => Math.Min(data.searchNgramCount, data.indexedItemNgramCoun),
-                         (data) => data.intersections);
+                         (searchedNgram, indexedNgram) => (double)Math.Min(searchedNgram.NgramCount, indexedNgram.NgramCount),
+                         (indexedItem, intersections, searchNgrams) => intersections);
         }
 
         /// <summary>
@@ -90,9 +93,24 @@ namespace NGramSearch
         /// <returns></returns>
         public IEnumerable<ResultItem<TKeyType>> SearchWithSimpleMatchingCoefficient(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
         {
+            if(reducePriorityOfNoisyNgrams)
+            {
+                return Search(searchedPhrase,
+
+                             (searchedNgram, indexedNgram) => 
+                                (double)Math.Min(searchedNgram.NgramCount, indexedNgram.NgramCount)
+                                 / _pivotIndex[searchedNgram.Ngram].TotalCount,
+
+                             (indexedItem, intersections, searchNgrams) => 
+                                intersections / (indexedItem.GetReducedPriorityNoisyNgramCount(_pivotIndex) 
+                                                 + searchNgrams.Sum(x => ((double)x.NgramCount) 
+                                                                          / (_pivotIndex.ContainsKey(x.Ngram) ? _pivotIndex[x.Ngram].TotalCount: 1))));
+            }
+
             return Search(searchedPhrase,
-                         (data) => Math.Min(data.searchNgramCount, data.indexedItemNgramCoun),
-                         (data) => data.intersections / (data.indexItemLength + data.searchedPhraseLength));
+                         (searchedNgram, indexedNgram) => (double)Math.Min(searchedNgram.NgramCount, indexedNgram.NgramCount),
+                         (indexedItem, intersections, searchNgrams) => 
+                            intersections / (indexedItem.NgramCount + searchNgrams.Sum(x => x.NgramCount)));
         }
 
         /// <summary>
@@ -105,8 +123,9 @@ namespace NGramSearch
         public IEnumerable<ResultItem<TKeyType>> SearchWithSorensenDiceCoefficient(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
         {
             return Search(searchedPhrase,
-                         (data) => Math.Min(data.searchNgramCount, data.indexedItemNgramCoun),
-                         (data) => 2 * data.intersections / (data.indexItemLength + data.searchedPhraseLength));
+                         (searchedNgram, indexedNgram) => (double)Math.Min(searchedNgram.NgramCount, indexedNgram.NgramCount),
+                         (indexedItem, intersections, searchNgrams) => 
+                            2 * intersections / (indexedItem.NgramCount + searchNgrams.Sum(x => x.NgramCount)));
         }
 
         /// <summary>
@@ -119,17 +138,20 @@ namespace NGramSearch
         public IEnumerable<ResultItem<TKeyType>> SearchWithJaccardIndex(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
         {
             return Search(searchedPhrase,
-                         (data) => Math.Min(data.searchNgramCount, data.indexedItemNgramCoun),
-                         (data) => data.intersections / (data.indexItemLength + data.searchedPhraseLength - data.intersections));
+                         (searchedNgram, indexedNgram) => (double)Math.Min(searchedNgram.NgramCount, indexedNgram.NgramCount),
+                         (indexedItem, intersections, searchNgrams) => 
+                            intersections / (indexedItem.NgramCount + searchNgrams.Sum(x => x.NgramCount) - intersections));
         }
 
+        
+
         private IEnumerable<ResultItem<TKeyType>> Search(string searchedPhrase,
-        Func<(int searchNgramCount, int indexedItemNgramCoun, int indexNgramCount), double> calculateNgramSimilarity,
-        Func<(double intersections, int indexItemLength, int searchedPhraseLength), double> calculatePhraseSimilarity)
+                                                        CalculateNgramSimilarity calculateNgramSimilarity,
+                                                        CalculatePhraseSimilarity calculatePhraseSimilarity)
         {
             var result = new List<ResultItem<TKeyType>>();
 
-            var searchNgrams = CreateNgrams(searchedPhrase, NCount);
+            IList<GroupedNgram> searchNgrams = CreateNgrams(searchedPhrase, NCount);
 
             var intersections = new Dictionary<int, double>(); // index item primary key, number of intersections
 
@@ -137,21 +159,17 @@ namespace NGramSearch
             {
                 if (_pivotIndex.ContainsKey(groupedNgram.Ngram))
                 {
-                    foreach (var wordIndexAndCount in _pivotIndex[groupedNgram.Ngram].IndexedItemReferences)
+                    foreach (IndexedNgramProperty indexedNgramProperty in _pivotIndex[groupedNgram.Ngram].IndexedItemReferences)
                     {
-                        if (!intersections.ContainsKey(wordIndexAndCount.WordIndex))
+                        if (!intersections.ContainsKey(indexedNgramProperty.WordIndex))
                         {
-                            intersections[wordIndexAndCount.WordIndex]
-                                = calculateNgramSimilarity((groupedNgram.NgramCount,
-                                                            wordIndexAndCount.NgramCount,
-                                                            _pivotIndex[groupedNgram.Ngram].TotalCount));
+                            intersections[indexedNgramProperty.WordIndex]
+                                = calculateNgramSimilarity(groupedNgram, indexedNgramProperty);
                         }
                         else
                         {
-                            intersections[wordIndexAndCount.WordIndex]
-                               += calculateNgramSimilarity((groupedNgram.NgramCount,
-                                                            wordIndexAndCount.NgramCount,
-                                                            _pivotIndex[groupedNgram.Ngram].TotalCount));
+                            intersections[indexedNgramProperty.WordIndex]
+                               += calculateNgramSimilarity(groupedNgram, indexedNgramProperty);
                         }
                     }
                 }
@@ -159,14 +177,11 @@ namespace NGramSearch
 
             result.AddRange(
                 intersections.Keys.Select(
-                    dkey =>
+                    itemIndex =>
                         new ResultItem<TKeyType>
                         {
-                            Id = _indexedItems[dkey].Id,
-                            Similarity = calculatePhraseSimilarity(
-                                (intersections[dkey],
-                                _indexedItems[dkey].Ngrams.Sum(x => x.NgramCount),
-                                searchNgrams.Sum(x => x.NgramCount)))
+                            Id = _indexedItems[itemIndex].Id,
+                            Similarity = calculatePhraseSimilarity(_indexedItems[itemIndex], intersections[itemIndex], searchNgrams)
                         }));
 
 
