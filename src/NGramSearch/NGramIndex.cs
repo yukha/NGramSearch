@@ -93,23 +93,23 @@ namespace NGramSearch
         /// <returns></returns>
         public IEnumerable<ResultItem<TKeyType>> SearchWithSimpleMatchingCoefficient(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
         {
-            if(reducePriorityOfNoisyNgrams)
+            if (reducePriorityOfNoisyNgrams)
             {
                 return Search(searchedPhrase,
 
-                             (searchedNgram, indexedNgram) => 
+                             (searchedNgram, indexedNgram) =>
                                 (double)Math.Min(searchedNgram.NgramCount, indexedNgram.NgramCount)
                                  / _pivotIndex[searchedNgram.Ngram].TotalCount,
 
-                             (indexedItem, intersections, searchNgrams) => 
-                                intersections / (indexedItem.GetReducedPriorityNoisyNgramCount(_pivotIndex) 
-                                                 + searchNgrams.Sum(x => ((double)x.NgramCount) 
-                                                                          / (_pivotIndex.ContainsKey(x.Ngram) ? _pivotIndex[x.Ngram].TotalCount: 1))));
+                             (indexedItem, intersections, searchNgrams) =>
+                                intersections / (indexedItem.GetReducedPriorityNoisyNgramCount(_pivotIndex)
+                                                 + searchNgrams.Sum(x => ((double)x.NgramCount)
+                                                                          / (_pivotIndex.ContainsKey(x.Ngram) ? _pivotIndex[x.Ngram].TotalCount : 1))));
             }
 
             return Search(searchedPhrase,
                          (searchedNgram, indexedNgram) => (double)Math.Min(searchedNgram.NgramCount, indexedNgram.NgramCount),
-                         (indexedItem, intersections, searchNgrams) => 
+                         (indexedItem, intersections, searchNgrams) =>
                             intersections / (indexedItem.NgramCount + searchNgrams.Sum(x => x.NgramCount)));
         }
 
@@ -122,9 +122,22 @@ namespace NGramSearch
         /// <returns></returns>
         public IEnumerable<ResultItem<TKeyType>> SearchWithSorensenDiceCoefficient(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
         {
+            if(reducePriorityOfNoisyNgrams)
+            {
+                return Search(searchedPhrase,
+
+                             (searchedNgram, indexedNgram) =>
+                                (double)Math.Min(searchedNgram.NgramCount, indexedNgram.NgramCount)
+                                 / _pivotIndex[searchedNgram.Ngram].TotalCount,
+
+                             (indexedItem, intersections, searchNgrams) =>
+                                2 * intersections / (indexedItem.GetReducedPriorityNoisyNgramCount(_pivotIndex)
+                                                 + searchNgrams.Sum(x => ((double)x.NgramCount)
+                                                                          / (_pivotIndex.ContainsKey(x.Ngram) ? _pivotIndex[x.Ngram].TotalCount : 1))));
+            }
             return Search(searchedPhrase,
                          (searchedNgram, indexedNgram) => (double)Math.Min(searchedNgram.NgramCount, indexedNgram.NgramCount),
-                         (indexedItem, intersections, searchNgrams) => 
+                         (indexedItem, intersections, searchNgrams) =>
                             2 * intersections / (indexedItem.NgramCount + searchNgrams.Sum(x => x.NgramCount)));
         }
 
@@ -137,13 +150,28 @@ namespace NGramSearch
         /// <returns></returns>
         public IEnumerable<ResultItem<TKeyType>> SearchWithJaccardIndex(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
         {
+            if (reducePriorityOfNoisyNgrams)
+            {
+                return Search(
+                    searchedPhrase,
+
+                    (searchedNgram, indexedNgram) => 
+                        (double)Math.Min(searchedNgram.NgramCount, indexedNgram.NgramCount)
+                        / _pivotIndex[searchedNgram.Ngram].TotalCount,
+
+                    (indexedItem, intersections, searchNgrams) =>
+                                intersections / (indexedItem.GetReducedPriorityNoisyNgramCount(_pivotIndex)
+                                                 + searchNgrams.Sum(x => ((double)x.NgramCount)
+                                                                          / (_pivotIndex.ContainsKey(x.Ngram) ? _pivotIndex[x.Ngram].TotalCount : 1))
+                                                 - intersections ));
+            }
             return Search(searchedPhrase,
                          (searchedNgram, indexedNgram) => (double)Math.Min(searchedNgram.NgramCount, indexedNgram.NgramCount),
-                         (indexedItem, intersections, searchNgrams) => 
+                         (indexedItem, intersections, searchNgrams) =>
                             intersections / (indexedItem.NgramCount + searchNgrams.Sum(x => x.NgramCount) - intersections));
         }
 
-        
+
 
         private IEnumerable<ResultItem<TKeyType>> Search(string searchedPhrase,
                                                         CalculateNgramSimilarity calculateNgramSimilarity,
