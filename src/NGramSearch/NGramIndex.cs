@@ -12,15 +12,14 @@ namespace NGramSearch
 
         private readonly int NCount;
 
-        /// <summary>
-        /// list of cached items
-        /// </summary>
-        private readonly List<IndexedItem<TKeyType>> _indexedItems = new List<IndexedItem<TKeyType>>();
+        private readonly object _itemListLock = new object();
+        private readonly object _pivotIndexLock = new object();
+
+        private readonly List<IndexedItem<TKeyType>> _itemList = new List<IndexedItem<TKeyType>>();
 
         private readonly IDictionary<string, PivotIndexItem> _pivotIndex
             = new Dictionary<string, PivotIndexItem>();
 
-        private readonly List<TKeyType> _ignoredItems = new List<TKeyType>();
 
         public NGramIndex() : this(3)
         {
@@ -34,33 +33,84 @@ namespace NGramSearch
 
         public void Add(TKeyType primaryKey, string normalizedValue)
         {
-
             var cachedItem = new IndexedItem<TKeyType> { Id = primaryKey, NormalizedValue = normalizedValue };
             cachedItem.Ngrams = CreateNgrams(cachedItem.NormalizedValue, NCount);
 
-            _indexedItems.Add(cachedItem);
-
+            int newItemListIndex;
+            lock (_itemListLock)
+            {
+                _itemList.Add(cachedItem);
+                newItemListIndex = _itemList.Count - 1;
+            }
 
             foreach (GroupedNgram groupedSyllable in cachedItem.Ngrams)
             {
-                if (!_pivotIndex.ContainsKey(groupedSyllable.Ngram))
+                PivotIndexItem pivotIndexItem;
+                lock (_pivotIndexLock)
                 {
-                    _pivotIndex[groupedSyllable.Ngram] = new PivotIndexItem();
+                    if (!_pivotIndex.ContainsKey(groupedSyllable.Ngram))
+                    {
+                        _pivotIndex[groupedSyllable.Ngram] = new PivotIndexItem();
+                    }
+
+                    // add position to the list of positions
+                    pivotIndexItem = _pivotIndex[groupedSyllable.Ngram];
                 }
 
-                // add position to the list of positions
-                var pivotIndexItem = _pivotIndex[groupedSyllable.Ngram];
-
                 pivotIndexItem.IndexedItemReferences.Add(
-                    new IndexedNgramProperty(_indexedItems.Count - 1, groupedSyllable.NgramCount));
+                    new IndexedNgramProperty(newItemListIndex, groupedSyllable.NgramCount));
 
                 pivotIndexItem.TotalCount += groupedSyllable.NgramCount;
             }
         }
 
-        internal void RemoveBlackListItem(TKeyType id)
+        public void Remove(TKeyType id)
         {
-            _ignoredItems.Add(id);
+            IndexedItem<TKeyType> item = null;
+            int wordIndex;
+            lock (_itemListLock)
+            {
+                int len = _itemList.Count();
+                
+                for (wordIndex = 0; wordIndex < len; ++wordIndex)
+                {
+                    if (!_itemList[wordIndex].Deleted && EqualityComparer<TKeyType>.Default.Equals(_itemList[wordIndex].Id, id))
+                    {
+                        item = _itemList[wordIndex];
+                        item.Deleted = true;
+                        break;
+                    }
+                }
+            }
+            if (item == null)
+                return;
+
+            // remove from _pivotIndex
+            lock (_pivotIndexLock)
+            {
+                var ngrams = CreateNgrams(item.NormalizedValue, NCount);
+                foreach (var ngram in ngrams)
+                {
+                    PivotIndexItem pivotItem = _pivotIndex[ngram.Ngram];
+                    // pivotItem.TotalCount -= ngram.NgramCount;
+                    var pLen = pivotItem.IndexedItemReferences.Count();
+                    for (int i = 0; i < pLen; ++i)
+                    {
+                        IndexedNgramProperty prop = pivotItem.IndexedItemReferences[i];
+                        if (prop.WordIndex == wordIndex)
+                        {
+                            pivotItem.TotalCount -= ngram.NgramCount;
+                            pivotItem.IndexedItemReferences.RemoveAt(i);
+                            break;
+                        }
+                    }
+
+                    if (pivotItem.TotalCount == 0)
+                    {
+                        _pivotIndex.Remove(ngram.Ngram);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -122,7 +172,7 @@ namespace NGramSearch
         /// <returns></returns>
         public IEnumerable<ResultItem<TKeyType>> SearchWithSorensenDiceCoefficient(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
         {
-            if(reducePriorityOfNoisyNgrams)
+            if (reducePriorityOfNoisyNgrams)
             {
                 return Search(searchedPhrase,
 
@@ -155,7 +205,7 @@ namespace NGramSearch
                 return Search(
                     searchedPhrase,
 
-                    (searchedNgram, indexedNgram) => 
+                    (searchedNgram, indexedNgram) =>
                         (double)Math.Min(searchedNgram.NgramCount, indexedNgram.NgramCount)
                         / _pivotIndex[searchedNgram.Ngram].TotalCount,
 
@@ -163,7 +213,7 @@ namespace NGramSearch
                                 intersections / (indexedItem.GetReducedPriorityNoisyNgramCount(_pivotIndex)
                                                  + searchNgrams.Sum(x => ((double)x.NgramCount)
                                                                           / (_pivotIndex.ContainsKey(x.Ngram) ? _pivotIndex[x.Ngram].TotalCount : 1))
-                                                 - intersections ));
+                                                 - intersections));
             }
             return Search(searchedPhrase,
                          (searchedNgram, indexedNgram) => (double)Math.Min(searchedNgram.NgramCount, indexedNgram.NgramCount),
@@ -203,20 +253,25 @@ namespace NGramSearch
                 }
             }
 
-            result.AddRange(
-                intersections.Keys.Select(
-                    itemIndex =>
-                        new ResultItem<TKeyType>
-                        {
-                            Id = _indexedItems[itemIndex].Id,
-                            Similarity = calculatePhraseSimilarity(_indexedItems[itemIndex], intersections[itemIndex], searchNgrams)
-                        }));
+            // we don't remove from _itemList -> don't neet to lock: lock (_itemListLock) 
+                result.AddRange(
+                    intersections.Keys.Select(
+                        itemIndex =>
+                            new ResultItem<TKeyType>
+                            {
+                                Id = _itemList[itemIndex].Id,
+                                Similarity = calculatePhraseSimilarity(_itemList[itemIndex], intersections[itemIndex], searchNgrams)
+                            }));
 
 
             return result.OrderByDescending(s => s.Similarity);
         }
 
-        public IEnumerable<GroupedNgram> GetAllNgrams()
+        /// <summary>
+        /// used only for tests
+        /// </summary>
+        /// <returns></returns>
+        protected IEnumerable<GroupedNgram> GetAllNgrams()
         {
             return _pivotIndex.Select(kvPair => new GroupedNgram { Ngram = kvPair.Key, NgramCount = kvPair.Value.TotalCount });
         }
@@ -235,13 +290,13 @@ namespace NGramSearch
         //}
 
 
-        private IList<GroupedNgram> CreateNgrams(string str, int n)
+        private static IList<GroupedNgram> CreateNgrams(string str, int n)
         {
             var list = new List<string>();
             if (!string.IsNullOrWhiteSpace(str))
             {
                 var len = str.Length;
-                for (int i = -1 * (n - (NCount - 1)); i < len - (NCount - 2); ++i)
+                for (int i = -1; i < len - n + 2; ++i)
                 {
                     var sb = new StringBuilder();
                     var p = i;

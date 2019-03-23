@@ -5,8 +5,12 @@ using System.Linq;
 
 namespace NGramSearchTest
 {
-    public class NGramCreationTest
+    public class NGramCreationTest : NGramSearch.NGramIndex<int> // for test protected method
     {
+        public NGramCreationTest(int nCount = 3) : base(nCount)
+        {
+        }
+
         [Fact]
         public void RobertHas6TriGramsTest()
         {
@@ -109,7 +113,7 @@ namespace NGramSearchTest
         [Fact]
         public void CheckNgramCount()
         {
-            var germaniFirms = new NGramSearch.NGramIndex<int>();
+            var germaniFirms = new NGramCreationTest();
             germaniFirms.Add(1, "volkswagen ag");
             germaniFirms.Add(2, "daimler ag");
             germaniFirms.Add(3, "allianz se");
@@ -134,7 +138,7 @@ namespace NGramSearchTest
         [Fact]
         public void CheckTotalBigramCount()
         {
-            var index = new NGramSearch.NGramIndex<int>(2);
+            var index = new NGramCreationTest(2);
 
             index.Add(1, "abcd");
             Assert.Equal(5, index.GetAllNgrams().Count());
@@ -149,7 +153,7 @@ namespace NGramSearchTest
         [Fact]
         public void CheckTotalTrigramCount()
         {
-            var index = new NGramSearch.NGramIndex<int>(3);
+            var index = new NGramCreationTest(3);
 
             index.Add(1, "abcd");
             Assert.Equal(4, index.GetAllNgrams().Count());
@@ -164,7 +168,7 @@ namespace NGramSearchTest
         [Fact]
         public void CheckTotalFourgramCount()
         {
-            var index = new NGramSearch.NGramIndex<int>(4);
+            var index = new NGramCreationTest(4);
 
             index.Add(1, "abcd");
             Assert.Equal(3, index.GetAllNgrams().Count());
@@ -179,7 +183,7 @@ namespace NGramSearchTest
         [Fact]
         public void CheckTooShortWord()
         {
-            var index = new NGramSearch.NGramIndex<int>(4);
+            var index = new NGramCreationTest(4);
 
             index.Add(1, "a");
 

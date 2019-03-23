@@ -9,6 +9,7 @@ namespace NGramSearch
         private double _reducedNgramCount = -1;
         public TKeyType Id { get; set; }
         public string NormalizedValue { get; set; }
+        public bool Deleted { get; set; } // false is default value
 
         public IList<GroupedNgram> Ngrams { get; set; }
 
