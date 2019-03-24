@@ -11,7 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{55D9313C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{DE98B52E-30C3-4332-A67F-953DF59D2B41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NGramSearchTest", "tests\NGramSearchTest\NGramSearchTest.csproj", "{A55329F5-D512-495B-A4F7-DE8AA25ABB0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NGramSearchTest", "tests\NGramSearchTest\NGramSearchTest.csproj", "{A55329F5-D512-495B-A4F7-DE8AA25ABB0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LargeIndexPerformaceConsoleTest", "tests\LargeIndexPerformaceConsoleTest\LargeIndexPerformaceConsoleTest.csproj", "{2418D59F-E21F-446A-BC8F-51DA67468918}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{A55329F5-D512-495B-A4F7-DE8AA25ABB0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A55329F5-D512-495B-A4F7-DE8AA25ABB0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A55329F5-D512-495B-A4F7-DE8AA25ABB0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2418D59F-E21F-446A-BC8F-51DA67468918}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2418D59F-E21F-446A-BC8F-51DA67468918}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2418D59F-E21F-446A-BC8F-51DA67468918}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2418D59F-E21F-446A-BC8F-51DA67468918}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -34,6 +40,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{068D71C2-7B60-451D-A69A-2F8929F9B49C} = {DC19B876-6C7F-4371-8072-132E67769047}
 		{A55329F5-D512-495B-A4F7-DE8AA25ABB0E} = {55D9313C-0C93-44C3-9714-BE9203B42DAC}
+		{2418D59F-E21F-446A-BC8F-51DA67468918} = {55D9313C-0C93-44C3-9714-BE9203B42DAC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EDA8B063-61C5-4DAD-A1E4-FC5671D288E7}
