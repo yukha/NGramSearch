@@ -1,10 +1,33 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
+import { HelpComponent } from './help/help.component';
+import { SearchResultsComponent } from './search-results/search-results.component';
+import { SearchSourceType } from './search-source-type.enum';
 
-const routes: Routes = [];
+const routes: Routes = [
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'actors',
+  },
+  {
+    path: 'actors',
+    component: SearchResultsComponent,
+    data: { searchSourceType: SearchSourceType.actors },
+  },
+  {
+    path: 'films',
+    component: SearchResultsComponent,
+    data: { searchSourceType: SearchSourceType.films },
+  },
+  {
+    path: 'help',
+    component: HelpComponent,
+  },
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

@@ -1,0 +1,37 @@
+<div class="fixed search">
+  <mat-form-field appearance="standard">
+    <mat-label></mat-label>
+    <input matInput
+           [placeholder]="initData.searchPlaceholder"
+           (keyup)="search($event)">
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+</div>
+
+<div class="container">
+  <app-result-card title="Intersection count"
+                   subtitle="&nbsp;"></app-result-card>
+  <app-result-card title="Intersection count"
+                   subtitle="With reduce the priority of noisy ngrams"></app-result-card>
+
+  <app-result-card title="Simple matching coefficient"
+                   subtitle="&nbsp;"
+                   wikiLink="https://en.wikipedia.org/wiki/Simple_matching_coefficient"></app-result-card>
+  <app-result-card title="Simple matching coefficient"
+                   subtitle="With reduce the priority of noisy ngrams"
+                   wikiLink="https://en.wikipedia.org/wiki/Simple_matching_coefficient"></app-result-card>
+
+  <app-result-card title="Sørensen–Dice coefficient"
+                   subtitle="&nbsp;"
+                   wikiLink="https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient"></app-result-card>
+  <app-result-card title="Sørensen–Dice coefficient"
+                   subtitle="With reduce the priority of noisy ngrams"
+                   wikiLink="https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient"></app-result-card>
+
+  <app-result-card title="Jaccard index"
+                   subtitle="&nbsp;"
+                   wikiLink="https://en.wikipedia.org/wiki/Jaccard_index"></app-result-card>
+  <app-result-card title="Jaccard index"
+                   subtitle="With reduce the priority of noisy ngrams"
+                   wikiLink="https://en.wikipedia.org/wiki/Jaccard_index"></app-result-card>
+</div>

@@ -1,3 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
-@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+.fixed {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  background: white;
+  z-index: 2;
+}
+.fixed.search {
+  text-align: center;
+  top: 60px;
+}
+.search .mat-form-field-infix {
+  min-width: 400px;
+  width: 70%;
+  font-size: 180%;
+}
+
+body {
+  --top-spacing: 170px;
+  margin: var(--top-spacing) auto;
+  scroll-padding-top: var(--top-spacing);
+}

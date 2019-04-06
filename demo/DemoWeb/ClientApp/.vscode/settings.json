@@ -1,0 +1,23 @@
+{
+  "beautify.language": {
+    "js": {},
+    "css": [],
+    "html": [
+      "htm",
+      "html"
+    ]
+  },
+  "editor.formatOnSave": true,
+  "html.format.wrapAttributes": "force-aligned",
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "es5",
+  "prettier.printWidth": 120,
+  "prettier.htmlWhitespaceSensitivity": "ignore",
+  "tslint.autoFixOnSave": true,
+  "[typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
+  "typescript.preferences.quoteStyle": "single"
+}

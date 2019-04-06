@@ -1,8 +1,30 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <span>Logo Line</span>
-    <span class="example-spacer"></span>
-    <mat-icon class="example-icon" aria-hidden="false" aria-label="Example heart icon">favorite</mat-icon>
-    <mat-icon class="example-icon" aria-hidden="false" aria-label="Example delete icon">delete</mat-icon>
+    <a mat-button
+       routerLink="/">
+      <mat-icon class="toolbar-icon"
+                aria-hidden="false"
+                aria-label="Example heart icon">favorite</mat-icon>
+      Logo Line
+    </a>
+
+    <a mat-button
+       routerLink="/actors">Actors</a>
+
+    <a mat-button
+       routerLink="/films">Films</a>
+
+    <span class="toolbar-spacer"></span>
+
+    <a mat-button
+       routerLink="/help">
+      <mat-icon class="toolbar-icon"
+                aria-hidden="false"
+                aria-label="Example delete icon">help</mat-icon>
+    </a>
+
+    <mat-icon class="toolbar-icon"
+              aria-hidden="false"
+              aria-label="Example delete icon">settings</mat-icon>
   </mat-toolbar-row>
 </mat-toolbar>
