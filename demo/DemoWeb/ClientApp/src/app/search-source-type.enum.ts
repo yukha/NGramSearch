@@ -1,4 +1,4 @@
 export enum SearchSourceType {
-  actors,
-  films,
+  actors = 'actors',
+  films = 'films',
 }

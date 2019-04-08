@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Select, Store } from '@ngxs/store';
+import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { SearchSourceType } from '../search-source-type.enum';
+import { SearchResultLine } from '../models/search-model';
 import { ApiServiceService } from '../services/api-service.service';
 import { InitData, InitDataService } from '../services/init-data.service';
+import { SetSearchedPhrase, SetSourceType } from '../store/search-action';
+import { SearchState } from '../store/search-state';
 
 @Component({
   selector: 'app-search-results',
@@ -12,43 +15,28 @@ import { InitData, InitDataService } from '../services/init-data.service';
   styleUrls: ['./search-results.component.scss'],
 })
 export class SearchResultsComponent {
-  private searchedPhrase$ = new BehaviorSubject<string>('');
+  @Select(SearchState.getIntersectionCountHidden) intersectionCountHidden$: Observable<boolean>;
 
-  searchItems: SearchItem[];
-  searchSourceType: SearchSourceType;
+  @Select(SearchState.getIntersectionCountResult) intersectionCountResult$: Observable<SearchResultLine[]>;
+
+  private searchedPhrase$ = new Subject<string>();
   initData: InitData;
 
-  constructor(initDataService: InitDataService, route: ActivatedRoute, api: ApiServiceService) {
-    this.searchSourceType = route.snapshot.data.searchSourceType;
-    this.initData = initDataService.getInitData(this.searchSourceType);
+  constructor(initDataService: InitDataService, route: ActivatedRoute, api: ApiServiceService, private store: Store) {
+    const searchSourceType = route.snapshot.data.searchSourceType;
+    this.initData = initDataService.getInitData(searchSourceType);
 
-    const phrase = this.searchedPhrase$.pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-    );
+    store.dispatch(new SetSourceType(searchSourceType));
 
-    this.searchItems = [
-      {
-        searchedPhrase$: phrase,
-        searchSourceType: this.searchSourceType,
-        api,
-      },
-    ];
-
-    // .subscribe(
-    //   (phrase: string) => console.log('phrase changed: ', phrase),
-    //   error => console.log(error),
-    //   () => console.log('complete')
-    // );
+    this.searchedPhrase$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged()
+      )
+      .subscribe((phrase: string) => store.dispatch(new SetSearchedPhrase(phrase)));
   }
 
   search(event) {
     this.searchedPhrase$.next(event.target.value);
   }
-}
-
-export class SearchItem {
-  searchedPhrase$: Observable<string>;
-  searchSourceType: SearchSourceType;
-  api: ApiServiceService;
 }
