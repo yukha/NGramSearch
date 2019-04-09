@@ -1,7 +1,10 @@
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
-import { SearchStateModel } from '../models/search-model';
+import produce from 'immer';
+import { tap } from 'rxjs/operators';
+import { SearchResultLine, SearchStateModel } from '../models/search-model';
 import { SearchIndexType } from '../search-source-type.enum';
+import { ApiServiceService } from '../services/api-service.service';
 import { SendSearchRequest, SetSearchedPhrase, SetSourceType } from './search-action';
 
 @State<SearchStateModel>({
@@ -21,6 +24,7 @@ import { SendSearchRequest, SetSearchedPhrase, SetSourceType } from './search-ac
   },
 })
 export class SearchState {
+  constructor(private api: ApiServiceService) {}
   @Selector()
   static getIntersectionCountHidden(state: SearchStateModel) {
     return state.intersectionCount.hidden;
@@ -69,5 +73,20 @@ export class SearchState {
           })
         );
       });
+  }
+
+  @Action(SendSearchRequest)
+  sendSearchRequest(ctx: StateContext<SearchStateModel>, { payload }: SendSearchRequest) {
+    // ngxs will subscribe to return value
+    return this.api.post('/api/sampledata/search').pipe(
+      tap((lines: SearchResultLine[]) => {
+        // side effect, using 'immer'
+        ctx.setState(
+          produce(draft => {
+            draft[payload.indexType].searchResult = lines;
+          })
+        );
+      })
+    );
   }
 }

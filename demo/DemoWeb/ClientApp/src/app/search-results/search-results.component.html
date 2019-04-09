@@ -12,7 +12,7 @@
   <app-result-card title="Intersection count"
                    subtitle="&nbsp;"
                    hidden="intersectionCountHidden$ | async"
-                   results="intersectionCountResult$ | async"></app-result-card>
+                   [results]="intersectionCountResult$ | async"></app-result-card>
   <app-result-card title="Intersection count"
                    subtitle="With reduce the priority of noisy ngrams"></app-result-card>
 

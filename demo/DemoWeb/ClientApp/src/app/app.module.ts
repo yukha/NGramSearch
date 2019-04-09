@@ -6,7 +6,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { NgxsModule } from '@ngxs/store';
-import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HelpComponent } from './help/help.component';
@@ -28,7 +27,8 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
     MatInputModule,
     MatButtonModule,
     MatCardModule,
-    NgxsModule.forRoot([SearchState], { developmentMode: !environment.production }),
+    NgxsModule.forRoot([SearchState], { developmentMode: true }), // !environment.production
+
     NgxsReduxDevtoolsPluginModule.forRoot({
       disabled: false,
     }),

@@ -26,6 +26,31 @@ namespace DemoWeb.Controllers
             });
         }
 
+        [HttpPost("search")]
+        public IEnumerable<SearchResultLine> Search()
+        {
+            return new[]
+            {
+                new SearchResultLine { Similarity = 1, Result = "asdf 1"},
+                new SearchResultLine { Similarity = 0.9, Result = "asdf 9"},
+                new SearchResultLine { Similarity = 0.8, Result = "asdf 8"},
+                new SearchResultLine { Similarity = 0.7, Result = "asdf 7"},
+                new SearchResultLine { Similarity = 0.6, Result = "asdf 6"},
+                new SearchResultLine { Similarity = 0.5, Result = "asdf 5"},
+                new SearchResultLine { Similarity = 0.4, Result = "asdf 4"},
+                new SearchResultLine { Similarity = 0.3, Result = "asdf 3"},
+                new SearchResultLine { Similarity = 0.2, Result = "asdf 2"},
+                new SearchResultLine { Similarity = 0.1, Result = "asdf 1"},
+                new SearchResultLine { Similarity = 0.0, Result = "asdf 0"},
+            };
+        }
+
+        public class SearchResultLine
+        {
+            public double Similarity { get; set; }
+            public string Result { get; set; }
+        }
+
         public class WeatherForecast
         {
             public string DateFormatted { get; set; }
