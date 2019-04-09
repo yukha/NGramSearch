@@ -1,7 +1,8 @@
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 import { SearchStateModel } from '../models/search-model';
-import { SetSearchedPhrase, SetSourceType } from './search-action';
+import { SearchIndexType } from '../search-source-type.enum';
+import { SendSearchRequest, SetSearchedPhrase, SetSourceType } from './search-action';
 
 @State<SearchStateModel>({
   name: 'store',
@@ -9,14 +10,14 @@ import { SetSearchedPhrase, SetSourceType } from './search-action';
     sourceType: undefined,
     searchedPhrase: '',
 
-    intersectionCount: { hidden: true, searchResult: [] },
-    intersectionCountNoisy: { hidden: true, searchResult: [] },
-    simpleMatchingCoefficient: { hidden: true, searchResult: [] },
-    simpleMatchingCoefficientNoisy: { hidden: true, searchResult: [] },
-    sorensenDiceCoefficient: { hidden: true, searchResult: [] },
-    sorensenDiceCoefficientNoisy: { hidden: true, searchResult: [] },
-    jaccardIndex: { hidden: true, searchResult: [] },
-    jaccardIndexNoisy: { hidden: true, searchResult: [] },
+    intersectionCount: { hidden: false, searchResult: [] },
+    intersectionCountNoisy: { hidden: false, searchResult: [] },
+    simpleMatchingCoefficient: { hidden: false, searchResult: [] },
+    simpleMatchingCoefficientNoisy: { hidden: false, searchResult: [] },
+    sorensenDiceCoefficient: { hidden: false, searchResult: [] },
+    sorensenDiceCoefficientNoisy: { hidden: false, searchResult: [] },
+    jaccardIndex: { hidden: false, searchResult: [] },
+    jaccardIndexNoisy: { hidden: false, searchResult: [] },
   },
 })
 export class SearchState {
@@ -37,14 +38,14 @@ export class SearchState {
       sourceType: payload,
       searchedPhrase: '',
 
-      intersectionCount: { hidden: true, searchResult: [] },
-      intersectionCountNoisy: { hidden: true, searchResult: [] },
-      simpleMatchingCoefficient: { hidden: true, searchResult: [] },
-      simpleMatchingCoefficientNoisy: { hidden: true, searchResult: [] },
-      sorensenDiceCoefficient: { hidden: true, searchResult: [] },
-      sorensenDiceCoefficientNoisy: { hidden: true, searchResult: [] },
-      jaccardIndex: { hidden: true, searchResult: [] },
-      jaccardIndexNoisy: { hidden: true, searchResult: [] },
+      intersectionCount: { hidden: false, searchResult: [] },
+      intersectionCountNoisy: { hidden: false, searchResult: [] },
+      simpleMatchingCoefficient: { hidden: false, searchResult: [] },
+      simpleMatchingCoefficientNoisy: { hidden: false, searchResult: [] },
+      sorensenDiceCoefficient: { hidden: false, searchResult: [] },
+      sorensenDiceCoefficientNoisy: { hidden: false, searchResult: [] },
+      jaccardIndex: { hidden: false, searchResult: [] },
+      jaccardIndexNoisy: { hidden: false, searchResult: [] },
     });
   }
 
@@ -55,5 +56,18 @@ export class SearchState {
         searchedPhrase: payload,
       })
     );
+
+    const state = ctx.getState();
+    Object.values(SearchIndexType)
+      .filter((indexType: SearchIndexType) => !state[indexType].hidden)
+      .forEach((indexType: SearchIndexType) => {
+        ctx.dispatch(
+          new SendSearchRequest({
+            sourceType: state.sourceType,
+            searchedPhrase: state.searchedPhrase,
+            indexType,
+          })
+        );
+      });
   }
 }
