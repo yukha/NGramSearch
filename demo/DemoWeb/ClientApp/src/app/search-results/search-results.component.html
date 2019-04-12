@@ -11,29 +11,43 @@
 <div class="container">
   <app-result-card title="Intersection count"
                    subtitle="&nbsp;"
-                   hidden="intersectionCountHidden$ | async"
+                   [hidden]="intersectionCountHidden$ | async"
                    [results]="intersectionCountResult$ | async"></app-result-card>
   <app-result-card title="Intersection count"
-                   subtitle="With reduce the priority of noisy ngrams"></app-result-card>
+                   subtitle="With reduce the priority of noisy ngrams"
+                   [hidden]="intersectionCountNoisyHidden$ | async"
+                   [results]="intersectionCountNoisyResult$ | async"></app-result-card>
 
   <app-result-card title="Simple matching coefficient"
                    subtitle="&nbsp;"
-                   wikiLink="https://en.wikipedia.org/wiki/Simple_matching_coefficient"></app-result-card>
+                   wikiLink="https://en.wikipedia.org/wiki/Simple_matching_coefficient"
+                   [hidden]="simpleMatchingCoefficientHidden$ | async"
+                   [results]="simpleMatchingCoefficientResult$ | async"></app-result-card>
   <app-result-card title="Simple matching coefficient"
                    subtitle="With reduce the priority of noisy ngrams"
-                   wikiLink="https://en.wikipedia.org/wiki/Simple_matching_coefficient"></app-result-card>
+                   wikiLink="https://en.wikipedia.org/wiki/Simple_matching_coefficient"
+                   [hidden]="simpleMatchingCoefficientNoisyHidden$ | async"
+                   [results]="simpleMatchingCoefficientNoisyResult$ | async"></app-result-card>
 
   <app-result-card title="Sørensen–Dice coefficient"
                    subtitle="&nbsp;"
-                   wikiLink="https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient"></app-result-card>
+                   wikiLink="https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient"
+                   [hidden]="sorensenDiceCoefficientHidden$ | async"
+                   [results]="sorensenDiceCoefficientResult$ | async"></app-result-card>
   <app-result-card title="Sørensen–Dice coefficient"
                    subtitle="With reduce the priority of noisy ngrams"
-                   wikiLink="https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient"></app-result-card>
+                   wikiLink="https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient"
+                   [hidden]="sorensenDiceCoefficientNoisyHidden$ | async"
+                   [results]="sorensenDiceCoefficientNoisyResult$ | async"></app-result-card>
 
   <app-result-card title="Jaccard index"
                    subtitle="&nbsp;"
-                   wikiLink="https://en.wikipedia.org/wiki/Jaccard_index"></app-result-card>
+                   wikiLink="https://en.wikipedia.org/wiki/Jaccard_index"
+                   [hidden]="jaccardIndexHidden$ | async"
+                   [results]="jaccardIndexResult$ | async"></app-result-card>
   <app-result-card title="Jaccard index"
                    subtitle="With reduce the priority of noisy ngrams"
-                   wikiLink="https://en.wikipedia.org/wiki/Jaccard_index"></app-result-card>
+                   wikiLink="https://en.wikipedia.org/wiki/Jaccard_index"
+                   [hidden]="jaccardIndexNoisyHidden$ | async"
+                   [results]="jaccardIndexNoisyResult$ | async"></app-result-card>
 </div>
