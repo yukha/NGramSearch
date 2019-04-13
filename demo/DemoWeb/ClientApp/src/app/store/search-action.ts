@@ -22,7 +22,7 @@ export class SendSearchRequest {
     public payload: {
       sourceType: SearchSourceType;
       searchedPhrase: string;
-      indexType: SearchIndexType;
+      searchType: SearchIndexType;
     }
   ) {}
 }

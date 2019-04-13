@@ -21,7 +21,26 @@ namespace DemoWeb.Controllers
         {
             ISearchService searchService = ServiceAccessor(searchRequest.SourceType);
             
-            return searchService.SearchWithIntersectionCount(searchRequest.SearchedPhrase);            
+            switch(searchRequest.SearchType)
+            {
+                case "intersectionCount":
+                    return searchService.SearchWithIntersectionCount(searchRequest.SearchedPhrase);
+                case "intersectionCountNoisy":
+                    return searchService.SearchWithIntersectionCount(searchRequest.SearchedPhrase, true);
+                case "simpleMatchingCoefficient":
+                    return searchService.SearchWithSimpleMatchingCoefficient(searchRequest.SearchedPhrase);
+                case "simpleMatchingCoefficientNoisy":
+                    return searchService.SearchWithSimpleMatchingCoefficient(searchRequest.SearchedPhrase, true);
+                case "sorensenDiceCoefficient":
+                    return searchService.SearchWithSorensenDiceCoefficient(searchRequest.SearchedPhrase);
+                case "sorensenDiceCoefficientNoisy":
+                    return searchService.SearchWithSorensenDiceCoefficient(searchRequest.SearchedPhrase, true);
+                case "jaccardIndex":
+                    return searchService.SearchWithJaccardIndex(searchRequest.SearchedPhrase);
+                case "jaccardIndexNoisy":
+                    return searchService.SearchWithJaccardIndex(searchRequest.SearchedPhrase, true);
+            }
+            throw new Exception("search type is not implemented.");
         }
     }
 }

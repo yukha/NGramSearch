@@ -134,13 +134,13 @@ export class SearchState {
 
     const state = ctx.getState();
     Object.values(SearchIndexType)
-      .filter((indexType: SearchIndexType) => !state[indexType].hidden)
-      .forEach((indexType: SearchIndexType) => {
+      .filter((searchType: SearchIndexType) => !state[searchType].hidden)
+      .forEach((searchType: SearchIndexType) => {
         ctx.dispatch(
           new SendSearchRequest({
             sourceType: state.sourceType,
             searchedPhrase: state.searchedPhrase,
-            indexType,
+            searchType,
           })
         );
       });
@@ -154,7 +154,7 @@ export class SearchState {
         // side effect, using 'immer'
         ctx.setState(
           produce(draft => {
-            draft[payload.indexType].searchResult = lines;
+            draft[payload.searchType].searchResult = lines;
           })
         );
       })

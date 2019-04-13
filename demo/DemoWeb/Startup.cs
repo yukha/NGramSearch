@@ -25,8 +25,8 @@ namespace DemoWeb
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddSingleton<ISearchService, ActorsSearchService>();
-            services.AddSingleton<ISearchService, FilmsSearchService>();
+            services.AddSingleton<ISearchService>(new SearchService("actors"));
+            services.AddSingleton<ISearchService>(new SearchService("films"));
 
             services.AddTransient<Func<string, ISearchService>>(provider => name =>
             {
