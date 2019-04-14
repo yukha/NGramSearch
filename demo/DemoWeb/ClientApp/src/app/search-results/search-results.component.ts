@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { SearchResultLine } from '../models/search-model';
-import { ApiServiceService } from '../services/api-service.service';
+import { SearchResultLine, SearchStateModel } from '../models/search-model';
+import { SearchIndexType } from '../search-source-type.enum';
 import { InitData, InitDataService } from '../services/init-data.service';
 import { SetSearchedPhrase, SetSourceType } from '../store/search-action';
 import { SearchState } from '../store/search-state';
+import { SettingsDialogComponent, SettingsDialogData } from './settings-dialog/settings-dialog.component';
 
 @Component({
   selector: 'app-search-results',
@@ -50,7 +52,12 @@ export class SearchResultsComponent {
   private searchedPhrase$ = new Subject<string>();
   initData: InitData;
 
-  constructor(initDataService: InitDataService, route: ActivatedRoute, api: ApiServiceService, private store: Store) {
+  constructor(
+    initDataService: InitDataService,
+    route: ActivatedRoute,
+    private store: Store,
+    private dialog: MatDialog
+  ) {
     const searchSourceType = route.snapshot.data.searchSourceType;
     this.initData = initDataService.getInitData(searchSourceType);
 
@@ -64,7 +71,30 @@ export class SearchResultsComponent {
       .subscribe((phrase: string) => store.dispatch(new SetSearchedPhrase(phrase)));
   }
 
-  search(event) {
+  search(event): void {
     this.searchedPhrase$.next(event.target.value);
+  }
+
+  showSettings(ev: MouseEvent): void {
+    const currentState = this.store.selectSnapshot<SearchStateModel>(state => state.store);
+
+    const ts = Object.values(SearchIndexType).map(i => {
+      return {
+        searchType: i,
+        searchTypeLabel: i,
+        searchTypeVisible: !currentState[i].hidden,
+      };
+    });
+
+    Object.values(SearchIndexType).forEach((searchType: SearchIndexType) => {});
+    const dialogData: SettingsDialogData = {
+      searchTypes: ts,
+    };
+
+    const dialogRef = this.dialog.open(SettingsDialogComponent, {
+      width: '350px',
+      position: { top: ev.pageY + 'px', right: '30px' },
+      data: dialogData,
+    });
   }
 }

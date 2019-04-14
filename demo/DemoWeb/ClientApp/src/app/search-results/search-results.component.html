@@ -1,4 +1,6 @@
 <div class="fixed search">
+  <div></div>
+
   <mat-form-field appearance="standard">
     <mat-label></mat-label>
     <input matInput
@@ -6,25 +8,42 @@
            (keyup)="search($event)">
     <mat-icon matSuffix>search</mat-icon>
   </mat-form-field>
+
+  <div class="settings">
+    <button mat-icon-button
+            (click)="showSettings($event)">
+      <mat-icon aria-label="Search settings">settings_outline</mat-icon>
+    </button>
+  </div>
 </div>
+
 
 <div class="container">
   <app-result-card title="Intersection count"
-                   subtitle="&nbsp;"
+                   subtitle=""
                    [hidden]="intersectionCountHidden$ | async"
-                   [results]="intersectionCountResult$ | async"></app-result-card>
+                   [results]="intersectionCountResult$ | async">
+    Number of intersection of two sets of ngrams: searched and found. Good choice for autocomplete.
+    <a href='https://en.wikipedia.org/wiki/Intersection_(set_theory)'>wikipedia</a>
+  </app-result-card>
 
   <app-result-card title="Intersection count"
                    subtitle="With reduce the priority of noisy ngrams"
                    [hidden]="intersectionCountNoisyHidden$ | async"
-                   [results]="intersectionCountNoisyResult$ | async"></app-result-card>
+                   [results]="intersectionCountNoisyResult$ | async">
+
+  </app-result-card>
 
 
   <app-result-card title="Simple matching coefficient"
                    subtitle="&nbsp;"
                    wikiLink="https://en.wikipedia.org/wiki/Simple_matching_coefficient"
                    [hidden]="simpleMatchingCoefficientHidden$ | async"
-                   [results]="simpleMatchingCoefficientResult$ | async"></app-result-card>
+                   [results]="simpleMatchingCoefficientResult$ | async">
+    The simple matching coefficient (SMC) or Rand similarity coefficient is a statistic used for comparing the
+    similarity and diversity of sample sets. Compares (depends on) the length of the sought and resulting phrase.
+    <a href='https://en.wikipedia.org/wiki/Simple_matching_coefficient'>wikipedia</a>
+  </app-result-card>
 
   <app-result-card title="Simple matching coefficient"
                    subtitle="With reduce the priority of noisy ngrams"
@@ -35,9 +54,12 @@
 
   <app-result-card title="Sørensen–Dice coefficient"
                    subtitle="&nbsp;"
-                   wikiLink="https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient"
+                   wikiLink=""
                    [hidden]="sorensenDiceCoefficientHidden$ | async"
-                   [results]="sorensenDiceCoefficientResult$ | async"></app-result-card>
+                   [results]="sorensenDiceCoefficientResult$ | async">
+    The Sørensen–Dice coefficient is a statistic used to gauge the similarity of two
+    samples. Compares (depends on) the length of the sought and resulting phrase.
+    <a href='https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient'>wikipedia</a></app-result-card>
 
   <app-result-card title="Sørensen–Dice coefficient"
                    subtitle="With reduce the priority of noisy ngrams"
@@ -50,7 +72,12 @@
                    subtitle="&nbsp;"
                    wikiLink="https://en.wikipedia.org/wiki/Jaccard_index"
                    [hidden]="jaccardIndexHidden$ | async"
-                   [results]="jaccardIndexResult$ | async"></app-result-card>
+                   [results]="jaccardIndexResult$ | async">
+    The Jaccard index, also known as Intersection over Union and the Jaccard similarity coefficient, is a statistic used
+    for gauging the similarity and
+    diversity of sample sets. Compares (depends on) the length of the sought and resulting phrase.
+    <a href='https://en.wikipedia.org/wiki/Jaccard_index'>wikipedia</a></app-result-card>
+
 
   <app-result-card title="Jaccard index"
                    subtitle="With reduce the priority of noisy ngrams"

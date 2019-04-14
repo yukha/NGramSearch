@@ -5,7 +5,7 @@ import { tap } from 'rxjs/operators';
 import { SearchResultLine, SearchStateModel } from '../models/search-model';
 import { SearchIndexType } from '../search-source-type.enum';
 import { ApiServiceService } from '../services/api-service.service';
-import { SendSearchRequest, SetSearchedPhrase, SetSourceType } from './search-action';
+import { SendSearchRequest, SetMethodResultVisible, SetSearchedPhrase, SetSourceType } from './search-action';
 
 @State<SearchStateModel>({
   name: 'store',
@@ -114,13 +114,13 @@ export class SearchState {
       searchedPhrase: '',
 
       intersectionCount: { hidden: false, searchResult: [] },
-      intersectionCountNoisy: { hidden: false, searchResult: [] },
+      intersectionCountNoisy: { hidden: true, searchResult: [] },
       simpleMatchingCoefficient: { hidden: false, searchResult: [] },
-      simpleMatchingCoefficientNoisy: { hidden: false, searchResult: [] },
+      simpleMatchingCoefficientNoisy: { hidden: true, searchResult: [] },
       sorensenDiceCoefficient: { hidden: false, searchResult: [] },
-      sorensenDiceCoefficientNoisy: { hidden: false, searchResult: [] },
+      sorensenDiceCoefficientNoisy: { hidden: true, searchResult: [] },
       jaccardIndex: { hidden: false, searchResult: [] },
-      jaccardIndexNoisy: { hidden: false, searchResult: [] },
+      jaccardIndexNoisy: { hidden: true, searchResult: [] },
     });
   }
 
@@ -157,6 +157,15 @@ export class SearchState {
             draft[payload.searchType].searchResult = lines;
           })
         );
+      })
+    );
+  }
+
+  @Action(SetMethodResultVisible)
+  setMethodResultVisible(ctx: StateContext<SearchStateModel>, { payload }: SetMethodResultVisible) {
+    ctx.setState(
+      produce(draft => {
+        draft[payload.sourceType].hidden = !payload.searchTypeVisible;
       })
     );
   }

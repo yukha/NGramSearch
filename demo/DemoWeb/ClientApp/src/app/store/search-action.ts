@@ -4,6 +4,7 @@ export enum ActionType {
   SET_SOURCE_TYPE = '[MENU] set source type',
   SET_SEARCHED_PHRASE = '[SEARCH_BOX] set searched phrase',
   SEND_SEARCH_REQUEST = '[SET_SEARCHED_PHRASE_ACTION] send search request',
+  SET_METHOD_RESULT_VISIBLE = '[SETTING_DIALOG] set search method result visible',
 }
 
 export class SetSourceType {
@@ -25,4 +26,9 @@ export class SendSearchRequest {
       searchType: SearchIndexType;
     }
   ) {}
+}
+
+export class SetMethodResultVisible {
+  public static readonly type = ActionType.SET_METHOD_RESULT_VISIBLE;
+  constructor(public payload: { sourceType: SearchSourceType; searchTypeVisible: boolean }) {}
 }

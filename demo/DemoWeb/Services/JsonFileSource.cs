@@ -39,7 +39,7 @@ namespace DemoWeb.Services
                 list = serializer.ReadObject(inputStream) as List<JsonDataItem>;
             }
 
-            var index = new NGramSearch.NGramIndex<int>(); // use trigram and SimpleNormalizer
+            var index = new NGramSearch.NGramIndex<int>(); // use defaults: trigram and SimpleNormalizer
             var items = new Dictionary<int, string>();
 
             foreach (var item in list)

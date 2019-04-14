@@ -1,33 +1,26 @@
 <mat-card class="example-card">
   <mat-card-header>
     <mat-card-title> {{title}}
-      <button mat-icon-button
-              (click)="help()">
-        <mat-icon>help_outline</mat-icon>
-      </button>
+
     </mat-card-title>
 
-    <mat-card-subtitle> {{subtitle}} </mat-card-subtitle>
+    <mat-card-subtitle>
+      <ng-content></ng-content>
+    </mat-card-subtitle>
 
-    <div class="toolbar-spacer"></div>
-
-    <button mat-icon-button
-            (click)="hide()">
-      <mat-icon>delete_outline</mat-icon>
-    </button>
   </mat-card-header>
 
   <table mat-table
          [dataSource]="results">
-    <!-- Item Column -->
+    <!-- Similarity Column -->
     <ng-container matColumnDef="similarity">
       <th mat-header-cell
           *matHeaderCellDef> Similarity </th>
       <td mat-cell
-          *matCellDef="let resultLine"> {{resultLine.similarity}} </td>
+          *matCellDef="let resultLine"> {{resultLine.similarity | number : '1.0-3'}} </td>
     </ng-container>
 
-    <!-- Cost Column -->
+    <!-- item name Column -->
     <ng-container matColumnDef="result">
       <th mat-header-cell
           *matHeaderCellDef> Result </th>

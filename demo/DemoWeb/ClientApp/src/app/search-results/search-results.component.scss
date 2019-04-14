@@ -17,3 +17,17 @@
   padding: 20px;
   width: 400px;
 }
+
+.fixed.search {
+  top: 60px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: center;
+}
+
+.settings {
+  height: 32px;
+  width: 32px;
+  margin: 45px 0 0 0;
+}

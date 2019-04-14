@@ -11,14 +11,14 @@ export class InitDataService {
         return {
           title: 'Lists of actors',
           searchLabel: 'Actors',
-          searchPlaceholder: 'enter name',
+          searchPlaceholder: 'actor name',
           searchHint: 'Lists of actors',
         };
       case SearchSourceType.films:
         return {
           title: 'Lists of film',
           searchLabel: 'Films',
-          searchPlaceholder: 'enter film name',
+          searchPlaceholder: 'film',
           searchHint: 'Lists of films',
         };
       default:

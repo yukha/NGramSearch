@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Search settings</h1>
+<div mat-dialog-content>
+
+  <mat-selection-list (selectionChange)="selectionChange($event)">
+    <mat-list-option *ngFor="let searchTypeItem of data.searchTypes"
+                     [selected]="searchTypeItem.searchTypeVisible"
+                     [value]="searchTypeItem.searchType">
+      {{searchTypeItem.searchTypeLabel}}
+    </mat-list-option>
+  </mat-selection-list>
+</div>
+<div mat-dialog-actions>
+  <button mat-button
+          [mat-dialog-close]>Close</button>
+</div>

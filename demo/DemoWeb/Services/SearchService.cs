@@ -17,7 +17,7 @@ namespace DemoWeb.Services
         {
             (NGramSearch.NGramIndex<int> index, Dictionary<int, string> items) = GetIndex(Name);
 
-            return index.SearchWithIntersectionCount(searchedPhrase, reducePriorityOfNoisyNgrams).Take(5).Select(x => new SearchResultLine
+            return index.SearchWithIntersectionCount(searchedPhrase, reducePriorityOfNoisyNgrams).Take(10).Select(x => new SearchResultLine
             {
                 Similarity = x.Similarity,
                 Result = items[x.Id]
@@ -29,7 +29,7 @@ namespace DemoWeb.Services
         {
             (NGramSearch.NGramIndex<int> index, Dictionary<int, string> items) = GetIndex(Name);
 
-            return index.SearchWithJaccardIndex(searchedPhrase, reducePriorityOfNoisyNgrams).Take(5).Select(x => new SearchResultLine
+            return index.SearchWithJaccardIndex(searchedPhrase, reducePriorityOfNoisyNgrams).Take(10).Select(x => new SearchResultLine
             {
                 Similarity = x.Similarity,
                 Result = items[x.Id]
@@ -40,7 +40,7 @@ namespace DemoWeb.Services
         {
             (NGramSearch.NGramIndex<int> index, Dictionary<int, string> items) = GetIndex(Name);
 
-            return index.SearchWithSimpleMatchingCoefficient(searchedPhrase, reducePriorityOfNoisyNgrams).Take(5).Select(x => new SearchResultLine
+            return index.SearchWithSimpleMatchingCoefficient(searchedPhrase, reducePriorityOfNoisyNgrams).Take(10).Select(x => new SearchResultLine
             {
                 Similarity = x.Similarity,
                 Result = items[x.Id]
@@ -51,7 +51,7 @@ namespace DemoWeb.Services
         {
             (NGramSearch.NGramIndex<int> index, Dictionary<int, string> items) = GetIndex(Name);
 
-            return index.SearchWithSorensenDiceCoefficient(searchedPhrase, reducePriorityOfNoisyNgrams).Take(5).Select(x => new SearchResultLine
+            return index.SearchWithSorensenDiceCoefficient(searchedPhrase, reducePriorityOfNoisyNgrams).Take(10).Select(x => new SearchResultLine
             {
                 Similarity = x.Similarity,
                 Result = items[x.Id]

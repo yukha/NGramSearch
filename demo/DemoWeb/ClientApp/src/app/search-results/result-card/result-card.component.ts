@@ -17,11 +17,4 @@ export class ResultCardComponent {
   @Input() results: SearchResultLine[] = [];
 
   displayedColumns: string[] = ['similarity', 'result'];
-
-  help() {
-    console.log('help');
-  }
-  hide() {
-    console.log('hide');
-  }
 }
