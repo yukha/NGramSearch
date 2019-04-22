@@ -146,34 +146,7 @@ namespace NGramSearch
                          (indexedItem, intersections, searchNgrams) => intersections);
         }
 
-        /// <summary>
-        /// https://en.wikipedia.org/wiki/Simple_matching_coefficient
-        /// intersection / (indexed_item_length + searchedPhrase_length)
-        /// </summary>
-        /// <param name="searchedPhrase">Search phrase</param>
-        /// <param name="reducePriorityOfNoisyNgrams">Calculate the weight of ngrams in the index and reduce the priority of noisy ngrams.</param>
-        /// <returns></returns>
-        public IEnumerable<ResultItem<TKeyType>> SearchWithSimpleMatchingCoefficient(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
-        {
-            if (reducePriorityOfNoisyNgrams)
-            {
-                return Search(searchedPhrase,
-
-                             (searchedNgram, indexedNgram) =>
-                                (double)Math.Min(searchedNgram.NgramCount, indexedNgram.NgramCount)
-                                 / _pivotIndex[searchedNgram.Ngram].TotalCount,
-
-                             (indexedItem, intersections, searchNgrams) =>
-                                intersections / (indexedItem.GetReducedPriorityNoisyNgramCount(_pivotIndex)
-                                                 + searchNgrams.Sum(x => ((double)x.NgramCount)
-                                                                          / (_pivotIndex.ContainsKey(x.Ngram) ? _pivotIndex[x.Ngram].TotalCount : 1))));
-            }
-
-            return Search(searchedPhrase,
-                         (searchedNgram, indexedNgram) => Math.Min(searchedNgram.NgramCount, indexedNgram.NgramCount),
-                         (indexedItem, intersections, searchNgrams) =>
-                            intersections / (indexedItem.NgramCount + searchNgrams.Sum(x => x.NgramCount)));
-        }
+    
 
         /// <summary>
         /// https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient

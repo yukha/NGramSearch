@@ -15,8 +15,6 @@ import { SendSearchRequest, SetMethodResultVisible, SetSearchedPhrase, SetSource
 
     intersectionCount: { hidden: false, searchResult: [] },
     intersectionCountNoisy: { hidden: false, searchResult: [] },
-    simpleMatchingCoefficient: { hidden: false, searchResult: [] },
-    simpleMatchingCoefficientNoisy: { hidden: false, searchResult: [] },
     sorensenDiceCoefficient: { hidden: false, searchResult: [] },
     sorensenDiceCoefficientNoisy: { hidden: false, searchResult: [] },
     jaccardIndex: { hidden: false, searchResult: [] },
@@ -44,26 +42,6 @@ export class SearchState {
   @Selector()
   static getIntersectionCountNoisyResult(state: SearchStateModel) {
     return state.intersectionCountNoisy.searchResult;
-  }
-
-  @Selector()
-  static getSimpleMatchingCoefficientHidden(state: SearchStateModel) {
-    return state.simpleMatchingCoefficient.hidden;
-  }
-
-  @Selector()
-  static getSimpleMatchingCoefficientResult(state: SearchStateModel) {
-    return state.simpleMatchingCoefficient.searchResult;
-  }
-
-  @Selector()
-  static getSimpleMatchingCoefficientNoisyHidden(state: SearchStateModel) {
-    return state.simpleMatchingCoefficientNoisy.hidden;
-  }
-
-  @Selector()
-  static getSimpleMatchingCoefficientNoisyResult(state: SearchStateModel) {
-    return state.simpleMatchingCoefficientNoisy.searchResult;
   }
 
   @Selector()
@@ -115,8 +93,6 @@ export class SearchState {
 
       intersectionCount: { hidden: false, searchResult: [] },
       intersectionCountNoisy: { hidden: true, searchResult: [] },
-      simpleMatchingCoefficient: { hidden: false, searchResult: [] },
-      simpleMatchingCoefficientNoisy: { hidden: true, searchResult: [] },
       sorensenDiceCoefficient: { hidden: false, searchResult: [] },
       sorensenDiceCoefficientNoisy: { hidden: true, searchResult: [] },
       jaccardIndex: { hidden: false, searchResult: [] },

@@ -16,8 +16,6 @@ export interface SearchStateModel {
 
   intersectionCount: SearchBoxStateModel;
   intersectionCountNoisy: SearchBoxStateModel;
-  simpleMatchingCoefficient: SearchBoxStateModel;
-  simpleMatchingCoefficientNoisy: SearchBoxStateModel;
   sorensenDiceCoefficient: SearchBoxStateModel;
   sorensenDiceCoefficientNoisy: SearchBoxStateModel;
   jaccardIndex: SearchBoxStateModel;

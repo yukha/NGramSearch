@@ -36,17 +36,6 @@ namespace DemoWeb.Services
             });
         }
 
-        public IEnumerable<SearchResultLine> SearchWithSimpleMatchingCoefficient(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
-        {
-            (NGramSearch.NGramIndex<int> index, Dictionary<int, string> items) = GetIndex(Name);
-
-            return index.SearchWithSimpleMatchingCoefficient(searchedPhrase, reducePriorityOfNoisyNgrams).Take(10).Select(x => new SearchResultLine
-            {
-                Similarity = x.Similarity,
-                Result = items[x.Id]
-            });
-        }
-
         public IEnumerable<SearchResultLine> SearchWithSorensenDiceCoefficient(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
         {
             (NGramSearch.NGramIndex<int> index, Dictionary<int, string> items) = GetIndex(Name);

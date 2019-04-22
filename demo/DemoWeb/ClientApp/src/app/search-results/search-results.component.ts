@@ -23,18 +23,6 @@ export class SearchResultsComponent {
   @Select(SearchState.getIntersectionCountNoisyHidden) intersectionCountNoisyHidden$: Observable<boolean>;
   @Select(SearchState.getIntersectionCountNoisyResult) intersectionCountNoisyResult$: Observable<SearchResultLine[]>;
 
-  @Select(SearchState.getSimpleMatchingCoefficientHidden) simpleMatchingCoefficientHidden$: Observable<boolean>;
-  @Select(SearchState.getSimpleMatchingCoefficientResult) simpleMatchingCoefficientResult$: Observable<
-    SearchResultLine[]
-  >;
-
-  @Select(SearchState.getSimpleMatchingCoefficientNoisyHidden) simpleMatchingCoefficientNoisyHidden$: Observable<
-    boolean
-  >;
-  @Select(SearchState.getSimpleMatchingCoefficientNoisyResult) simpleMatchingCoefficientNoisyResult$: Observable<
-    SearchResultLine[]
-  >;
-
   @Select(SearchState.getSorensenDiceCoefficientHidden) sorensenDiceCoefficientHidden$: Observable<boolean>;
   @Select(SearchState.getSorensenDiceCoefficientResult) sorensenDiceCoefficientResult$: Observable<SearchResultLine[]>;
 

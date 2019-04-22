@@ -27,10 +27,6 @@ namespace DemoWeb.Controllers
                     return searchService.SearchWithIntersectionCount(searchRequest.SearchedPhrase);
                 case "intersectionCountNoisy":
                     return searchService.SearchWithIntersectionCount(searchRequest.SearchedPhrase, true);
-                case "simpleMatchingCoefficient":
-                    return searchService.SearchWithSimpleMatchingCoefficient(searchRequest.SearchedPhrase);
-                case "simpleMatchingCoefficientNoisy":
-                    return searchService.SearchWithSimpleMatchingCoefficient(searchRequest.SearchedPhrase, true);
                 case "sorensenDiceCoefficient":
                     return searchService.SearchWithSorensenDiceCoefficient(searchRequest.SearchedPhrase);
                 case "sorensenDiceCoefficientNoisy":

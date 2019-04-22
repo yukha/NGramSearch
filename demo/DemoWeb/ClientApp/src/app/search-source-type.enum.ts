@@ -6,8 +6,6 @@ export enum SearchSourceType {
 export enum SearchIndexType {
   intersectionCount = 'intersectionCount',
   intersectionCountNoisy = 'intersectionCountNoisy',
-  simpleMatchingCoefficient = 'simpleMatchingCoefficient',
-  simpleMatchingCoefficientNoisy = 'simpleMatchingCoefficientNoisy',
   sorensenDiceCoefficient = 'sorensenDiceCoefficient',
   sorensenDiceCoefficientNoisy = 'sorensenDiceCoefficientNoisy',
   jaccardIndex = 'jaccardIndex',

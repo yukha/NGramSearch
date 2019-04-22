@@ -41,14 +41,6 @@ namespace LargeIndexPerformaceConsoleTest
             PrintResult(result);
             Console.WriteLine();
 
-            Console.WriteLine("SearchWithSimpleMatchingCoefficient:");
-            result = Index.SearchWithSimpleMatchingCoefficient("adam smith");
-            PrintResult(result);
-            Console.WriteLine("SearchWithSimpleMatchingCoefficient (reduce priority of noisy ngrams):");
-            result = Index.SearchWithSimpleMatchingCoefficient("adam smith", true);
-            PrintResult(result);
-            Console.WriteLine();
-
             Console.WriteLine("SearchWithSorensenDiceCoefficient:");
             result = Index.SearchWithSorensenDiceCoefficient("adam smith");
             PrintResult(result);
