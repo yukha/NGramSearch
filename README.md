@@ -1,4 +1,6 @@
 # Approximate matching and approximate search
+C# implementation of fuzzy search and fuzzy matching. That will find matches even when users misspell words or enter in only partial words for the search.
+
 Substrings of length N are called n-grams. N-grams partially overlap.
 For example, phrase `a little`,
 when using trigrams, will split into 8 parts (for simplicity symbol _ means whitespace)
