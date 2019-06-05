@@ -7,10 +7,10 @@ namespace DemoWeb.Services
     {
         string Name { get; }
 
-        IEnumerable<SearchResultLine> SearchWithIntersectionCount(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false);
+        IEnumerable<SearchResultLine> SearchWithIntersectionCount(string searchedPhrase);
 
-        IEnumerable<SearchResultLine> SearchWithSorensenDiceCoefficient(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false);
+        IEnumerable<SearchResultLine> SearchWithSorensenDiceCoefficient(string searchedPhrase);
 
-        IEnumerable<SearchResultLine> SearchWithJaccardIndex(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false);
+        IEnumerable<SearchResultLine> SearchWithJaccardIndex(string searchedPhrase);
     }
 }

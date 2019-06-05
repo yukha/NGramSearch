@@ -28,24 +28,15 @@ namespace LargeIndexPerformaceConsoleTest
             Console.WriteLine("SearchWithIntersectionCount:");
             IEnumerable<NGramSearch.ResultItem<int>> result = Index.SearchWithIntersectionCount("adam smith");
             PrintResult(result);
-            Console.WriteLine("SearchWithIntersectionCount (reduce priority of noisy ngrams):");
-            result = Index.SearchWithIntersectionCount("adam smith", true);
-            PrintResult(result);
             Console.WriteLine();
 
             Console.WriteLine("SearchWithJaccardIndex:");
             result = Index.SearchWithJaccardIndex("adam smith");
             PrintResult(result);
-            Console.WriteLine("SearchWithJaccardIndex (reduce priority of noisy ngrams):");
-            result = Index.SearchWithJaccardIndex("adam smith", true);
-            PrintResult(result);
             Console.WriteLine();
 
             Console.WriteLine("SearchWithSorensenDiceCoefficient:");
             result = Index.SearchWithSorensenDiceCoefficient("adam smith");
-            PrintResult(result);
-            Console.WriteLine("SearchWithSorensenDiceCoefficient (reduce priority of noisy ngrams):");
-            result = Index.SearchWithSorensenDiceCoefficient("adam smith", true);
             PrintResult(result);
             Console.WriteLine();
         }

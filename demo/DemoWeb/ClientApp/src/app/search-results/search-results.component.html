@@ -26,14 +26,7 @@
     Number of intersection of two sets of ngrams: searched and found. Good choice for autocomplete.
     <a href='https://en.wikipedia.org/wiki/Intersection_(set_theory)'>wikipedia</a>
   </app-result-card>
-
-  <app-result-card title="Intersection count"
-                   subtitle="With reduce the priority of noisy ngrams"
-                   [hidden]="intersectionCountNoisyHidden$ | async"
-                   [results]="intersectionCountNoisyResult$ | async">
-
-  </app-result-card>
-
+  
 
     <app-result-card title="Sørensen–Dice coefficient"
                    subtitle="&nbsp;"
@@ -43,13 +36,7 @@
     The Sørensen–Dice coefficient is a statistic used to gauge the similarity of two
     samples. Compares (depends on) the length of the sought and resulting phrase.
     <a href='https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient'>wikipedia</a></app-result-card>
-
-  <app-result-card title="Sørensen–Dice coefficient"
-                   subtitle="With reduce the priority of noisy ngrams"
-                   wikiLink="https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient"
-                   [hidden]="sorensenDiceCoefficientNoisyHidden$ | async"
-                   [results]="sorensenDiceCoefficientNoisyResult$ | async"></app-result-card>
-
+  
 
   <app-result-card title="Jaccard index"
                    subtitle="&nbsp;"
@@ -61,10 +48,4 @@
     diversity of sample sets. Compares (depends on) the length of the sought and resulting phrase.
     <a href='https://en.wikipedia.org/wiki/Jaccard_index'>wikipedia</a></app-result-card>
 
-
-  <app-result-card title="Jaccard index"
-                   subtitle="With reduce the priority of noisy ngrams"
-                   wikiLink="https://en.wikipedia.org/wiki/Jaccard_index"
-                   [hidden]="jaccardIndexNoisyHidden$ | async"
-                   [results]="jaccardIndexNoisyResult$ | async"></app-result-card>
 </div>

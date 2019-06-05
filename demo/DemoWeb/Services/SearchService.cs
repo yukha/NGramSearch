@@ -13,11 +13,11 @@ namespace DemoWeb.Services
             Name = name;
         }
 
-        public IEnumerable<SearchResultLine> SearchWithIntersectionCount(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
+        public IEnumerable<SearchResultLine> SearchWithIntersectionCount(string searchedPhrase)
         {
             (NGramSearch.NGramIndex<int> index, Dictionary<int, string> items) = GetIndex(Name);
 
-            return index.SearchWithIntersectionCount(searchedPhrase, reducePriorityOfNoisyNgrams).Take(10).Select(x => new SearchResultLine
+            return index.SearchWithIntersectionCount(searchedPhrase).Take(10).Select(x => new SearchResultLine
             {
                 Similarity = x.Similarity,
                 Result = items[x.Id]
@@ -25,22 +25,22 @@ namespace DemoWeb.Services
 
         }
 
-        public IEnumerable<SearchResultLine> SearchWithJaccardIndex(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
+        public IEnumerable<SearchResultLine> SearchWithJaccardIndex(string searchedPhrase)
         {
             (NGramSearch.NGramIndex<int> index, Dictionary<int, string> items) = GetIndex(Name);
 
-            return index.SearchWithJaccardIndex(searchedPhrase, reducePriorityOfNoisyNgrams).Take(10).Select(x => new SearchResultLine
+            return index.SearchWithJaccardIndex(searchedPhrase).Take(10).Select(x => new SearchResultLine
             {
                 Similarity = x.Similarity,
                 Result = items[x.Id]
             });
         }
 
-        public IEnumerable<SearchResultLine> SearchWithSorensenDiceCoefficient(string searchedPhrase, bool reducePriorityOfNoisyNgrams = false)
+        public IEnumerable<SearchResultLine> SearchWithSorensenDiceCoefficient(string searchedPhrase)
         {
             (NGramSearch.NGramIndex<int> index, Dictionary<int, string> items) = GetIndex(Name);
 
-            return index.SearchWithSorensenDiceCoefficient(searchedPhrase, reducePriorityOfNoisyNgrams).Take(10).Select(x => new SearchResultLine
+            return index.SearchWithSorensenDiceCoefficient(searchedPhrase).Take(10).Select(x => new SearchResultLine
             {
                 Similarity = x.Similarity,
                 Result = items[x.Id]
