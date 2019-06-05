@@ -20,22 +20,11 @@ export class SearchResultsComponent {
   @Select(SearchState.getIntersectionCountHidden) intersectionCountHidden$: Observable<boolean>;
   @Select(SearchState.getIntersectionCountResult) intersectionCountResult$: Observable<SearchResultLine[]>;
 
-  @Select(SearchState.getIntersectionCountNoisyHidden) intersectionCountNoisyHidden$: Observable<boolean>;
-  @Select(SearchState.getIntersectionCountNoisyResult) intersectionCountNoisyResult$: Observable<SearchResultLine[]>;
-
   @Select(SearchState.getSorensenDiceCoefficientHidden) sorensenDiceCoefficientHidden$: Observable<boolean>;
   @Select(SearchState.getSorensenDiceCoefficientResult) sorensenDiceCoefficientResult$: Observable<SearchResultLine[]>;
 
-  @Select(SearchState.getSorensenDiceCoefficientNoisyHidden) sorensenDiceCoefficientNoisyHidden$: Observable<boolean>;
-  @Select(SearchState.getSorensenDiceCoefficientNoisyResult) sorensenDiceCoefficientNoisyResult$: Observable<
-    SearchResultLine[]
-  >;
-
   @Select(SearchState.getJaccardIndexHidden) jaccardIndexHidden$: Observable<boolean>;
   @Select(SearchState.getJaccardIndexResult) jaccardIndexResult$: Observable<SearchResultLine[]>;
-
-  @Select(SearchState.getJaccardIndexNoisyHidden) jaccardIndexNoisyHidden$: Observable<boolean>;
-  @Select(SearchState.getJaccardIndexNoisyResult) jaccardIndexNoisyResult$: Observable<SearchResultLine[]>;
 
   private searchedPhrase$ = new Subject<string>();
   initData: InitData;
@@ -74,7 +63,7 @@ export class SearchResultsComponent {
       };
     });
 
-    Object.values(SearchIndexType).forEach((searchType: SearchIndexType) => {});
+    Object.values(SearchIndexType).forEach((searchType: SearchIndexType) => { });
     const dialogData: SettingsDialogData = {
       searchTypes: ts,
     };

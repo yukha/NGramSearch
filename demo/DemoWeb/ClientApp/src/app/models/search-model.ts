@@ -15,9 +15,6 @@ export interface SearchStateModel {
   searchedPhrase: string;
 
   intersectionCount: SearchBoxStateModel;
-  intersectionCountNoisy: SearchBoxStateModel;
   sorensenDiceCoefficient: SearchBoxStateModel;
-  sorensenDiceCoefficientNoisy: SearchBoxStateModel;
   jaccardIndex: SearchBoxStateModel;
-  jaccardIndexNoisy: SearchBoxStateModel;
 }

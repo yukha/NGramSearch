@@ -14,15 +14,12 @@ import { SendSearchRequest, SetMethodResultVisible, SetSearchedPhrase, SetSource
     searchedPhrase: '',
 
     intersectionCount: { hidden: false, searchResult: [] },
-    intersectionCountNoisy: { hidden: false, searchResult: [] },
     sorensenDiceCoefficient: { hidden: false, searchResult: [] },
-    sorensenDiceCoefficientNoisy: { hidden: false, searchResult: [] },
     jaccardIndex: { hidden: false, searchResult: [] },
-    jaccardIndexNoisy: { hidden: false, searchResult: [] },
   },
 })
 export class SearchState {
-  constructor(private api: ApiServiceService) {}
+  constructor(private api: ApiServiceService) { }
 
   @Selector()
   static getIntersectionCountHidden(state: SearchStateModel) {
@@ -32,16 +29,6 @@ export class SearchState {
   @Selector()
   static getIntersectionCountResult(state: SearchStateModel) {
     return state.intersectionCount.searchResult;
-  }
-
-  @Selector()
-  static getIntersectionCountNoisyHidden(state: SearchStateModel) {
-    return state.intersectionCountNoisy.hidden;
-  }
-
-  @Selector()
-  static getIntersectionCountNoisyResult(state: SearchStateModel) {
-    return state.intersectionCountNoisy.searchResult;
   }
 
   @Selector()
@@ -55,16 +42,6 @@ export class SearchState {
   }
 
   @Selector()
-  static getSorensenDiceCoefficientNoisyHidden(state: SearchStateModel) {
-    return state.sorensenDiceCoefficientNoisy.hidden;
-  }
-
-  @Selector()
-  static getSorensenDiceCoefficientNoisyResult(state: SearchStateModel) {
-    return state.sorensenDiceCoefficientNoisy.searchResult;
-  }
-
-  @Selector()
   static getJaccardIndexHidden(state: SearchStateModel) {
     return state.jaccardIndex.hidden;
   }
@@ -72,16 +49,6 @@ export class SearchState {
   @Selector()
   static getJaccardIndexResult(state: SearchStateModel) {
     return state.jaccardIndex.searchResult;
-  }
-
-  @Selector()
-  static getJaccardIndexNoisyHidden(state: SearchStateModel) {
-    return state.jaccardIndexNoisy.hidden;
-  }
-
-  @Selector()
-  static getJaccardIndexNoisyResult(state: SearchStateModel) {
-    return state.jaccardIndexNoisy.searchResult;
   }
 
   @Action(SetSourceType)
@@ -92,11 +59,8 @@ export class SearchState {
       searchedPhrase: '',
 
       intersectionCount: { hidden: false, searchResult: [] },
-      intersectionCountNoisy: { hidden: true, searchResult: [] },
       sorensenDiceCoefficient: { hidden: false, searchResult: [] },
-      sorensenDiceCoefficientNoisy: { hidden: true, searchResult: [] },
       jaccardIndex: { hidden: false, searchResult: [] },
-      jaccardIndexNoisy: { hidden: true, searchResult: [] },
     });
   }
 
