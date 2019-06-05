@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace NGramSearch
 {
@@ -13,6 +11,6 @@ namespace NGramSearch
         }
         public int TotalCount { get; set; }
 
-        public List<IndexedNgramProperty> IndexedItemReferences {get;set;}
+        public List<IndexedNgramProperty> IndexedItemReferences { get; set; }
     }
 }

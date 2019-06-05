@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using Xunit;
 
 namespace NGramSearchTest
@@ -51,7 +48,7 @@ namespace NGramSearchTest
             Assert.Equal(4, agResult.Count());
             Assert.Equal(9.0 / 20, agResult.First().Similarity, 8); // "_ag", "ag_" -> 1/5 + 1/4 = 9/20
 
-            
+
             var ag2Result = index.SearchWithIntersectionCount("agx agy", true);
             Assert.Equal(4, ag2Result.Count());
             Assert.Equal('d', ag2Result.First().Id);

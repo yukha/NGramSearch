@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using Xunit;
 
 namespace NGramSearchTest
@@ -13,7 +10,7 @@ namespace NGramSearchTest
         {
             var index = new NGramSearch.NGramIndex<int>();
             index.Add(1, "abcd"); // _ab abc bcd cd_
-            
+
             var result = index.SearchWithSorensenDiceCoefficient("ab"); // _ab ab_
             // 2 * 1 / (4 + 2) = 1 / 3
             Assert.Equal(1.0 / 3, result.Single().Similarity, 8);

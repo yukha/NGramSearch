@@ -9,7 +9,7 @@ namespace DemoWeb.Controllers
     [Route("api/[controller]")]
     public class DemoSearchController : Controller
     {
-         private readonly Func<string, ISearchService> ServiceAccessor;
+        private readonly Func<string, ISearchService> ServiceAccessor;
 
         public DemoSearchController(Func<string, ISearchService> serviceAccessor)
         {
@@ -20,8 +20,8 @@ namespace DemoWeb.Controllers
         public IEnumerable<SearchResultLine> Search([FromBody] SearchRequest searchRequest)
         {
             ISearchService searchService = ServiceAccessor(searchRequest.SourceType);
-            
-            switch(searchRequest.SearchType)
+
+            switch (searchRequest.SearchType)
             {
                 case "intersectionCount":
                     return searchService.SearchWithIntersectionCount(searchRequest.SearchedPhrase);

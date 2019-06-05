@@ -27,7 +27,7 @@ namespace NGramSearch
 
         public double GetReducedPriorityNoisyNgramCount(IDictionary<string, PivotIndexItem> pivotIndex)
         {
-            if(_reducedNgramCount < 0)
+            if (_reducedNgramCount < 0)
             {
                 _reducedNgramCount = Ngrams.Sum(x => ((double)x.NgramCount) / pivotIndex[x.Ngram].TotalCount);
             }

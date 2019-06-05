@@ -1,6 +1,6 @@
 using System;
-using Xunit;
 using System.Linq;
+using Xunit;
 
 
 namespace NGramSearchTest
@@ -98,7 +98,7 @@ namespace NGramSearchTest
 
             var result = germaniFirms.SearchWithSorensenDiceCoefficient("bmw ag");
 
-            Assert.All(result.Select(r => r.Id), item => (new[] { 1, 2, 4, 5 }).Contains(item) ); // "ag" contains 1,2,4,5
+            Assert.All(result.Select(r => r.Id), item => (new[] { 1, 2, 4, 5 }).Contains(item)); // "ag" contains 1,2,4,5
             Assert.Equal(4, result.First().Id); // 4 must be first
             Assert.Equal(1, result.First().Similarity); // "bmw ag" has 100% similarity
 
@@ -107,7 +107,7 @@ namespace NGramSearchTest
             Assert.Single(result);
             Assert.Equal(4, result.First().Id);
             // _bm bmw mw_ & _bm bmw mw_ w_a _ag ag_ : 2 * 3:intersection / (3 + 6) = 2 / 3
-            Assert.Equal(2.0 / 3, result.First().Similarity, 8); 
+            Assert.Equal(2.0 / 3, result.First().Similarity, 8);
         }
 
         [Fact]
