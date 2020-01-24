@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MatSelectionListChange, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSelectionListChange } from '@angular/material/list';
 import { Store } from '@ngxs/store';
 import { SearchIndexType } from 'src/app/search-source-type.enum';
 import { SetMethodResultVisible } from 'src/app/store/search-action';
