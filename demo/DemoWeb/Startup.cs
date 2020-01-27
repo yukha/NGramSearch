@@ -19,27 +19,46 @@ namespace DemoWeb
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddSingleton<ISearchService>(new SearchService("actors"));
-            services.AddSingleton<ISearchService>(new SearchService("films"));
+            services.AddSingleton(new IntersectionCountSearchService("actors"));
+            services.AddSingleton(new IntersectionCountSearchService("films"));
 
-            services.AddTransient<Func<string, ISearchService>>(provider => name =>
+            services.AddSingleton(new SorensenDiceCoefficientSearchService("actors"));
+            services.AddSingleton(new SorensenDiceCoefficientSearchService("films"));
+
+            services.AddSingleton(new JaccardIndexSearchService("actors"));
+            services.AddSingleton(new JaccardIndexSearchService("films"));
+
+            services.AddTransient<Func<string, IntersectionCountSearchService>>(provider => name =>
             {
-                return provider.GetServices<ISearchService>().FirstOrDefault(s => s.Name == name);
+                var registeredServices = provider.GetServices<IntersectionCountSearchService>();
+                return registeredServices.FirstOrDefault(s => s.Name == name);
             });
 
-            // In production, the Angular files will be served from this directory
+            services.AddTransient<Func<string, SorensenDiceCoefficientSearchService>>(provider => name =>
+            {
+                var registeredServices = provider.GetServices<SorensenDiceCoefficientSearchService>();
+                return registeredServices.FirstOrDefault(s => s.Name == name);
+            });
+
+            services.AddTransient<Func<string, JaccardIndexSearchService>>(provider => name =>
+            {
+                var registeredServices = provider.GetServices<JaccardIndexSearchService>();
+                return registeredServices.FirstOrDefault(s => s.Name == name);
+            });
+
+
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -49,7 +68,6 @@ namespace DemoWeb
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 

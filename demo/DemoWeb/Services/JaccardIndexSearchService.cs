@@ -1,14 +1,15 @@
 ﻿using DemoWeb.Models;
 using System.Collections.Generic;
 using System.Linq;
+using NGramSearch;
 
 namespace DemoWeb.Services
 {
-    public class SearchService : JsonFileSource, ISearchService
+    public class JaccardIndexSearchService : JsonFileSource<JaccardIndex<int>>, ISearchService
     {
         public string Name { get; }
 
-        public SearchService(string name)
+        public JaccardIndexSearchService(string name)
         {
             Name = name;
         }
@@ -17,7 +18,7 @@ namespace DemoWeb.Services
         {
             (NGramSearch.NGramIndex<int> index, Dictionary<int, string> items) = GetIndex(Name);
 
-            return index.SearchWithIntersectionCount(searchedPhrase).Take(10).Select(x => new SearchResultLine
+            return index.Search(searchedPhrase).Take(10).Select(x => new SearchResultLine
             {
                 Similarity = x.Similarity,
                 Result = items[x.Id]
@@ -29,7 +30,7 @@ namespace DemoWeb.Services
         {
             (NGramSearch.NGramIndex<int> index, Dictionary<int, string> items) = GetIndex(Name);
 
-            return index.SearchWithJaccardIndex(searchedPhrase).Take(10).Select(x => new SearchResultLine
+            return index.Search(searchedPhrase).Take(10).Select(x => new SearchResultLine
             {
                 Similarity = x.Similarity,
                 Result = items[x.Id]
@@ -40,7 +41,7 @@ namespace DemoWeb.Services
         {
             (NGramSearch.NGramIndex<int> index, Dictionary<int, string> items) = GetIndex(Name);
 
-            return index.SearchWithSorensenDiceCoefficient(searchedPhrase).Take(10).Select(x => new SearchResultLine
+            return index.Search(searchedPhrase).Take(10).Select(x => new SearchResultLine
             {
                 Similarity = x.Similarity,
                 Result = items[x.Id]

@@ -8,11 +8,11 @@ namespace NGramSearchTest
         [Fact]
         public void SimpleCount()
         {
-            var source = new NGramSearch.NGramIndex<string>();
+            var source = new NGramSearch.IntersectionCountIndex<string>();
             source.Add("first", "aaaa");
             source.Add("second", "bbbb");
 
-            var result = source.SearchWithIntersectionCount("aaa");
+            var result = source.Search("aaa");
 
             Assert.Single(result);
             Assert.Equal("first", result.First().Id);
@@ -23,12 +23,12 @@ namespace NGramSearchTest
         [Fact]
         public void LengthComparison()
         {
-            var source = new NGramSearch.NGramIndex<string>();
+            var source = new NGramSearch.SorensenDiceCoefficientIndex<string>();
             source.Add("first", "aaaa");
             source.Add("second", "bbbb");
 
 
-            var result = source.SearchWithSorensenDiceCoefficient("aaa");
+            var result = source.Search("aaa");
 
             Assert.Single(result);
             Assert.Equal("first", result.First().Id);
@@ -38,11 +38,11 @@ namespace NGramSearchTest
         [Fact]
         public void SimpleCountWithDuplicitiInSearch()
         {
-            var source = new NGramSearch.NGramIndex<string>();
+            var source = new NGramSearch.IntersectionCountIndex<string>();
             source.Add("first", "aaa");
             source.Add("second", "bbb");
 
-            var result = source.SearchWithIntersectionCount("aaaa");
+            var result = source.Search("aaaa");
 
             Assert.Single(result);
             Assert.Equal("first", result.First().Id);
@@ -52,11 +52,11 @@ namespace NGramSearchTest
         [Fact]
         public void SimpleCountBothDuplicity()
         {
-            var source = new NGramSearch.NGramIndex<string>();
+            var source = new NGramSearch.IntersectionCountIndex<string>();
             source.Add("first", "aaaaaaaaaa");
             source.Add("second", "bbb");
 
-            var result = source.SearchWithIntersectionCount("aaaaa");
+            var result = source.Search("aaaaa");
 
             Assert.Single(result);
             Assert.Equal("first", result.First().Id);

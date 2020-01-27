@@ -9,30 +9,41 @@ namespace DemoWeb.Controllers
     [Route("api/[controller]")]
     public class DemoSearchController : Controller
     {
-        private readonly Func<string, ISearchService> ServiceAccessor;
+        private readonly Func<string, IntersectionCountSearchService> _intersectionCountServiceAccessor;
+        private readonly Func<string, SorensenDiceCoefficientSearchService> _sorensenDiceCoefficientServiceAccessor;
+        private readonly Func<string, JaccardIndexSearchService> _jaccardIndexServiceAccessor;
 
-        public DemoSearchController(Func<string, ISearchService> serviceAccessor)
+
+        public DemoSearchController(
+            Func<string, IntersectionCountSearchService> intersectionCountServiceAccessor,
+            Func<string, SorensenDiceCoefficientSearchService> sorensenDiceCoefficientServiceAccessor,
+            Func<string, JaccardIndexSearchService> jaccardIndexServiceAccessor )
         {
-            ServiceAccessor = serviceAccessor;
+            _intersectionCountServiceAccessor = intersectionCountServiceAccessor;
+            _sorensenDiceCoefficientServiceAccessor = sorensenDiceCoefficientServiceAccessor;
+            _jaccardIndexServiceAccessor = jaccardIndexServiceAccessor;
         }
 
-        [HttpPost("search")]
-        public IEnumerable<SearchResultLine> Search([FromBody] SearchRequest searchRequest)
+        [HttpPost("intersectionCount")]
+        public IEnumerable<SearchResultLine> IntersectionCount([FromBody] SearchRequest searchRequest)
         {
-            ISearchService searchService = ServiceAccessor(searchRequest.SourceType);
-
-            switch (searchRequest.SearchType)
-            {
-                case "intersectionCount":
-                    return searchService.SearchWithIntersectionCount(searchRequest.SearchedPhrase);
-
-                case "sorensenDiceCoefficient":
-                    return searchService.SearchWithSorensenDiceCoefficient(searchRequest.SearchedPhrase);
-
-                case "jaccardIndex":
-                    return searchService.SearchWithJaccardIndex(searchRequest.SearchedPhrase);
-            }
-            throw new Exception("search type is not implemented.");
+            var searchService = _intersectionCountServiceAccessor(searchRequest.SourceType);
+            return searchService.SearchWithIntersectionCount(searchRequest.SearchedPhrase);
         }
+
+        [HttpPost("sorensenDiceCoefficient")]
+        public IEnumerable<SearchResultLine> SorensenDiceCoefficient([FromBody] SearchRequest searchRequest)
+        {
+            var searchService = _jaccardIndexServiceAccessor(searchRequest.SourceType);
+            return searchService.SearchWithSorensenDiceCoefficient(searchRequest.SearchedPhrase);
+        }
+
+        [HttpPost("jaccardIndex")]
+        public IEnumerable<SearchResultLine> JaccardIndex([FromBody] SearchRequest searchRequest)
+        {
+            var searchService = _sorensenDiceCoefficientServiceAccessor(searchRequest.SourceType);
+            return searchService.SearchWithJaccardIndex(searchRequest.SearchedPhrase);
+        }
+
     }
 }

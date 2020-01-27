@@ -3,14 +3,12 @@ using System.Linq;
 
 namespace NGramSearch
 {
-    internal class IndexedItem<TKeyType>
+    public class IndexedItem<TKeyType>
     {
         private int _ngramCount = -1;
         public TKeyType Id { get; set; }
         public string NormalizedValue { get; set; }
-        public bool Deleted { get; set; } // false is default value
-
-        public IList<GroupedNgram> Ngrams { get; set; }
+        public IList<GroupedNGram> NGrams { get; set; }
 
         public int NgramCount
         {
@@ -18,7 +16,7 @@ namespace NGramSearch
             {
                 if (_ngramCount < 0)
                 {
-                    _ngramCount = Ngrams.Sum(x => x.NgramCount);
+                    _ngramCount = NGrams.Sum(x => x.TotalPhraseNGramCount);
                 }
                 return _ngramCount;
             }

@@ -15,11 +15,11 @@ import { SendSearchRequest, SetMethodResultVisible, SetSearchedPhrase, SetSource
 
     intersectionCount: { hidden: false, searchResult: [] },
     sorensenDiceCoefficient: { hidden: false, searchResult: [] },
-    jaccardIndex: { hidden: false, searchResult: [] },
-  },
+    jaccardIndex: { hidden: false, searchResult: [] }
+  }
 })
 export class SearchState {
-  constructor(private api: ApiServiceService) { }
+  constructor(private api: ApiServiceService) {}
 
   @Selector()
   static getIntersectionCountHidden(state: SearchStateModel) {
@@ -60,7 +60,7 @@ export class SearchState {
 
       intersectionCount: { hidden: false, searchResult: [] },
       sorensenDiceCoefficient: { hidden: false, searchResult: [] },
-      jaccardIndex: { hidden: false, searchResult: [] },
+      jaccardIndex: { hidden: false, searchResult: [] }
     });
   }
 
@@ -68,7 +68,7 @@ export class SearchState {
   setSearchedPhrase(ctx: StateContext<SearchStateModel>, { payload }: SetSearchedPhrase) {
     ctx.setState(
       patch<SearchStateModel>({
-        searchedPhrase: payload,
+        searchedPhrase: payload
       })
     );
 
@@ -80,7 +80,7 @@ export class SearchState {
           new SendSearchRequest({
             sourceType: state.sourceType,
             searchedPhrase: state.searchedPhrase,
-            searchType,
+            searchType
           })
         );
       });
@@ -89,7 +89,7 @@ export class SearchState {
   @Action(SendSearchRequest)
   sendSearchRequest(ctx: StateContext<SearchStateModel>, { payload }: SendSearchRequest) {
     // ngxs will subscribe to return value
-    return this.api.post('/api/demoSearch/search', {}, payload).pipe(
+    return this.api.post('/api/demoSearch/' + payload.searchType, {}, payload).pipe(
       tap((lines: SearchResultLine[]) => {
         // side effect, using 'immer'
         ctx.setState(

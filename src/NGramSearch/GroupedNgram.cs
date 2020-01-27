@@ -1,12 +1,9 @@
 ﻿namespace NGramSearch
 {
-    public class GroupedNgram
+    public class GroupedNGram
     {
-        public string Ngram { get; set; }
+        public string NGram { get; set; }
 
-        /// <summary>
-        /// Count this Ngram in one token (indexed item or search phrase)
-        /// </summary>
-        public int NgramCount { get; set; }
+        public int TotalPhraseNGramCount { get; set; }
     }
 }

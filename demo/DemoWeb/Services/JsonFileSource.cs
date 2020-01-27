@@ -2,13 +2,14 @@
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
+using NGramSearch;
 
 namespace DemoWeb.Services
 {
-    public abstract class JsonFileSource
+    public abstract class JsonFileSource<TIndexType> where TIndexType : NGramIndex<int>, new()
     {
         private readonly object IndexLock = new object();
-        private NGramSearch.NGramIndex<int> _initializedIndex;
+        private NGramIndex<int> _initializedIndex;
         private Dictionary<int, string> _initializedItems;
 
 
@@ -35,7 +36,7 @@ namespace DemoWeb.Services
                 list = serializer.ReadObject(inputStream) as List<JsonDataItem>;
             }
 
-            var index = new NGramSearch.NGramIndex<int>(); // use defaults: trigram and SimpleNormalizer
+            var index = new TIndexType(); // use defaults: trigram and SimpleNormalizer
             var items = new Dictionary<int, string>();
 
             foreach (var item in list)
