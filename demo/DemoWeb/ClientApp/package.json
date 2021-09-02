@@ -25,7 +25,7 @@
     "@angular/router": "^8.2.14",
     "@ngxs/store": "^3.4.3",
     "core-js": "^3.6.4",
-    "immer": "^2.1.5",
+    "immer": "^9.0.6",
     "rxjs": "~6.5.4",
     "tslib": "^1.9.0",
     "zone.js": "~0.9.1"
